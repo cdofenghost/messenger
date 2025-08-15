@@ -1,1 +1,2 @@
 messenger_venv/
+backend/utils/secret_data.py
