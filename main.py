@@ -1,5 +1,7 @@
 from fastapi import FastAPI
+
 from .backend.database import get_engine, Base
+from .backend.logic import user_routes
 
 app = FastAPI(
     title="Messenger API",
@@ -11,3 +13,5 @@ def startup():
     print("start test")
     print(Base.metadata.tables)
     Base.metadata.create_all(bind=get_engine())
+
+app.include_router(user_routes.router)
