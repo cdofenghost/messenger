@@ -36,7 +36,7 @@ def generate_access_token(user_id: int, email: str) -> str:
 async def get_current_user(request: Request,
                            service: ServiceDependency) -> UserSchema:
     cookie_token: str = request.cookies.get("token")
-    payload_header: dict[str, Any] = jwt.decode(message=cookie_token, key=SECRET_TOKEN_KEY, algorithms=[TOKEN_ALGORITHM])
+    payload_header: dict[str, Any] = jwt.decode(jwt=cookie_token, key=SECRET_TOKEN_KEY, algorithms=[TOKEN_ALGORITHM])
     user_id: int = payload_header['user_id']
 
     if user_id is None:
