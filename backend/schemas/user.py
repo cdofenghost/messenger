@@ -1,10 +1,11 @@
+from typing import Optional
 from pydantic import BaseModel, EmailStr, Field, constr
 
 class UserSchema(BaseModel):
     id: int = Field()
     name: str = Field(pattern="[А-Яа-яA-Za-z0-9]+", min_length=2, max_length=50)
     email: EmailStr = Field()
-    bio: str = Field()
+    bio: str = Field(max_length=250)
     status: str = Field()
     hashed_password: str = Field()
 
@@ -17,3 +18,9 @@ class UserCreateSchema(UserCredentialSchema):
 
 class SetUsernameRequest(BaseModel):
     name: str = Field(pattern="[А-Яа-яA-Za-z0-9]+", min_length=2, max_length=50)
+
+class UserChangeDataSchema(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    bio: Optional[str] = None
+    password: Optional[str] = None
