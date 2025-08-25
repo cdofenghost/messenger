@@ -23,3 +23,17 @@ class UserAlreadyRegisteredError(AppError):
 class UserNotFoundError(AppError):
     def __init__(self, message: str = "User not found.", error_code: int = 404):
         super().__init__(message, error_code)
+
+
+class ChatNotFoundError(AppError):
+    def __init__(self, message: str = "Chat not found.", error_code: int = 404):
+        super().__init__(message, error_code)
+
+
+class ParticipantNotFoundError(AppError):
+    def __init__(self, message: str = "Participant not found.", error_code: int = 404):
+        super().__init__(message, error_code)
+
+class ParticipantAlreadyExistsError(AppError):
+    def __init__(self, message: str = "Participant has already been added to this chat.", error_code: int = 400):
+        super().__init__(message, error_code)

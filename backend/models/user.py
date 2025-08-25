@@ -12,4 +12,4 @@ class User(Base):
     status = Column(String)
     hashed_password = Column(String)
 
-    # participations = relationship("Participant", back_populates="user")
+    participations = relationship("Participant", back_populates="user", cascade="all, delete")
