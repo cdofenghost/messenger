@@ -29,10 +29,6 @@ class UserRepository:
         )
     
     def __to_user_schema(self, user: User) -> UserSchema:
-        print(
-            user.id, user.name, user.email,
-            user.bio, user.status, user.hashed_password
-        )
         return UserSchema(
             id=user.id, name=user.name, email=user.email,
             bio=user.bio, status=user.status, hashed_password=user.hashed_password

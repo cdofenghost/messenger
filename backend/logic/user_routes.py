@@ -50,11 +50,11 @@ async def authorize(credentials: UserCredentialSchema,
         raise HTTPException(status_code=e.error_code, detail=e.message)
         
 
-@router.get('/')
-async def get_user(user_id: int,
+@router.get('/{id}')
+async def get_user(id: int,
                    service: ServiceDependency):
     try:
-        return service.get_user(user_id)
+        return service.get_user(id)
 
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
