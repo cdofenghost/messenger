@@ -3,22 +3,22 @@ from typing import Annotated, Optional
 
 from sqlalchemy.orm import Session
 
-from .tokens import get_current_user
-from .exceptions import AppError
-from .chats import ( 
+from ..tokens import get_current_user
+from ..exceptions import AppError
+from ..chats import ( 
     ChatRepository, ChatService,
     ChatCreateSchema, ChatSchema,
     ChatUpdateSchema, CreatePublicChatSchema,
     CreatePrivateChatSchema,
 )
-from .particpants import (
+from ..particpants import (
     ParticipantRepository, ParticipantService,
     ParticipantCreateSchema, ParticipantSchema,
     ParticipationSchema, 
 )
 
-from ..database import get_db
-from ..schemas.user import UserSchema
+from ...database import get_db
+from ...schemas.user import UserSchema
 router = APIRouter(tags=["Chat"], prefix="/chats")
 
 def get_chat_repository(db: Session = Depends(get_db)) -> ChatRepository:

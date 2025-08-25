@@ -3,10 +3,10 @@ from typing import Annotated
 
 from sqlalchemy.orm import Session
 
-from ..database import get_db
-from .tokens import get_current_user, generate_access_token
-from .exceptions import AppError
-from .users import (
+from ...database import get_db
+from ..tokens import get_current_user, generate_access_token
+from ..exceptions import AppError
+from ..users import (
     UserRepository, UserService,
     UserCreateSchema, UserSchema, UserCredentialSchema,
     UserChangeDataSchema,

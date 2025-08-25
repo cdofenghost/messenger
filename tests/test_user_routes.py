@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from ..main import app
 from ..backend.logic.exceptions import *
-from ..backend.logic.user_routes import UserCreateSchema
+from ..backend.logic.routes.users import UserCreateSchema
 from ..backend.database import get_db
 
 client = TestClient(app)
