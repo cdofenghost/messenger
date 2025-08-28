@@ -37,3 +37,8 @@ class ParticipantNotFoundError(AppError):
 class ParticipantAlreadyExistsError(AppError):
     def __init__(self, message: str = "Participant has already been added to this chat.", error_code: int = 400):
         super().__init__(message, error_code)
+
+
+class MessageNotFoundError(AppError):
+    def __init__(self, message: str = "Message not found.", error_code: int = 400):
+        super().__init__(message, error_code)

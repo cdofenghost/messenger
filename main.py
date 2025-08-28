@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from .backend.database import get_engine, Base
 from .backend.logic.routes import (
-    chats, users,
+    chats, users, messages,
 )
 from .tests import app
 
@@ -19,3 +19,4 @@ def startup():
 
 app.include_router(users.router)
 app.include_router(chats.router)
+app.include_router(messages.router)

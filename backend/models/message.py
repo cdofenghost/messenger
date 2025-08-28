@@ -6,9 +6,9 @@ class Message(Base):
     __tablename__ = "messages"
 
     id = Column(Integer, primary_key=True, index=True)
-    participant_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
+    sender_id = Column(Integer, ForeignKey("participants.id", ondelete="CASCADE"))
     text = Column(String)
 
-    sender = relationship("Participant", foreign_keys=[participant_id], cascade="all, delete", back_populates="messages")
+    sender = relationship("Participant", foreign_keys=[sender_id], cascade="all, delete", back_populates="messages")
     # attachments
 
