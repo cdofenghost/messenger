@@ -1,0 +1,20 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "name": "Terence Fletcher",
+            "email": "terence.fletcher@gmail.com",
+            "bio": "Not quite my tempo.",
+            "status": "online",
+            "password": "1111"
+        },
+        {
+            "id": 2,
+            "name": "Andrew Neiman",
+            "email": "andrew.rich@gmail.com",
+            "bio": "I'd rather die drunk and broke at 34 and have people talk about me at the dinner table, than live to be rich and sober at 90 and nobody remember who I was.",
+            "status": "online",
+            "password": "1111"
+        }
+    ]
+}

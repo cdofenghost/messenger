@@ -1,23 +1,45 @@
 <template>
-    <div class="other-message-container">
+    <div v-if="!userSentMessage" class="other-message-container">
         <div class="message-sender nunito-800">
-            Message Sender
+            <b>{{ senderName }}</b>
         </div>
         <div class="message-content">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet eaque quas blanditiis velit iure. In placeat quam, suscipit ex vitae sequi culpa maiores rem quia itaque id officiis quo consequuntur.
+            {{ content }}
         </div>
+        <div class="timestamp">{{ timestamp }}</div>  
     </div>
-    <div class="your-message-container">
+    <div v-if="userSentMessage" class="your-message-container">
         <div class="message-sender nunito-800">
-            Message Sender
+            <b>{{ senderName }}</b>
         </div>
         <div class="message-content">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet eaque quas blanditiis velit iure. In placeat quam, suscipit ex vitae sequi culpa maiores rem quia itaque id officiis quo consequuntur.
+            {{ content }}
         </div>
+        <div class="timestamp">{{ timestamp }}</div>
     </div>
 </template>
 
-<script setup>
+<script>
+    export default {
+        props: {
+            userSentMessage: {
+                type: Boolean,
+                default: false
+            },
+            senderName: {
+                type: String,
+                default: 'Message Sender'
+            },
+            content: {
+                type: String,
+                default: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet eaque quas blanditiis velit iure. In placeat quam, suscipit ex vitae sequi culpa maiores rem quia itaque id officiis quo consequuntur."
+            },
+            timestamp: {
+                type: String,
+                default: "hh:mm"
+            }
+        }
+    }
 </script>
 
 <style scoped>
@@ -57,5 +79,19 @@
     .your-message-container .message-sender {
         font-size: 0.6rem;
         color: var(--primary-color);
+    }
+
+    .timestamp {
+        font-size: 0.4rem;
+        text-align: right;
+        margin-top: 0.1rem;
+    }
+
+    .your-message-container .timestamp {
+        color: var(--unnecessary-color-white);
+    }
+
+    .other-message-container .timestamp {
+        color: var(--unnecessary-color-grey);
     }
 </style>

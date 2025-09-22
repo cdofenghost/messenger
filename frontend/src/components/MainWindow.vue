@@ -1,13 +1,16 @@
 <template>
     <div class="main-frame">
-        <Chat></Chat>
+        <Chats></Chats>
         <ChatWindow></ChatWindow>
     </div>
 </template>
 
 <script setup>
-    import Chat from './Chats.vue'
+    import Chats from './Chats.vue'
     import ChatWindow from './ChatWindow.vue'
+</script>
+
+<script>
 </script>
 
 <style scoped>
@@ -19,4 +22,5 @@
         gap: 0.5rem;
         margin: 0 10vw;
     }
+
 </style>

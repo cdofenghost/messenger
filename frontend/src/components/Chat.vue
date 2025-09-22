@@ -1,15 +1,17 @@
 <template>
-    <div class="chat-frame">
+    <div class="chat-frame"
+        :class="{ 'active-chat': isActive }"
+        @click="$emit('click')">
         <div class="chat-icon">
-            <img src="../static/imgs/666175.png"></img>
+            <img :src="'/src/static/imgs/' + chatIconName"></img>
         </div>
         <div class="chat-info">
             <div class="name-message">
                 <div class="chat-name nunito-600">
-                    Chat Name
+                    {{ chatName }}
                 </div>
                 <div class="last-message nunito-300">
-                    Andrey: what the actual fuck how am i going to do this
+                    {{ lastMessage }}
                 </div>
             </div>
             <div class="last-msg-time nunito-200">
@@ -19,7 +21,33 @@
     </div>
 </template>
 
+<script setup>
+</script>
 <script>
+    export default {
+        props: {
+            id: {
+                type: Number,
+                default: 0,
+            },
+            chatName: {
+                type: String,
+                default: "Chat Name",
+            },
+            lastMessage: {
+                type: String,
+                default: "Sender: Lore"
+            },
+            chatIconName: {
+                type: String,
+                default: "666175.png"
+            },
+            isActive: {
+                type: Boolean,
+                default: false
+            }
+        }
+    }
 </script>
 
 <style scoped>
@@ -34,8 +62,18 @@
 
     .chat-frame {
         background-color: var(--accent-color);
-
+        border: 4px solid transparent;
         transition: background-color 0.1s ease-in;
+    }
+
+    .chat-frame.active-chat {
+        color: var(--deep-color);
+        background-color: var(--primary-color);
+        border: 4px solid var(--accent-color);
+
+        transition: background-color 0.05s ease-in,
+                    border 0.05s ease-in,
+                    color 0.05s ease-in;
     }
 
     .chat-frame {
@@ -85,4 +123,5 @@
 
         max-width: 10vw;
     }
+    
 </style>

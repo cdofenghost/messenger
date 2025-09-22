@@ -33,3 +33,15 @@
     inherits: false;
     initial-value: #715A5A;
 }
+
+@property --unnecessary-color-grey {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #686868;
+}
+
+@property --unnecessary-color-white {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #bbbbbb;
+}

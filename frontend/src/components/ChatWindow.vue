@@ -1,37 +1,59 @@
 <template>
-    <div class="chat-container">
+    <div class="chat-container" v-if="currentChat">
         <div class="chat-bar">
             <div class="chat-icon">
-                <img src="../static/imgs/666175.png"></img>
+                <img src="/src/static/imgs/666175.png"></img>
             </div>
             <div class="detail-info">
-                <div class="chat-name nunito-600">Chat Name</div>
-                <div class="chat-member-count nunito-400">5 members</div>
+                <div class="chat-name nunito-600">{{ currentChat.name }}</div>
+                <div class="chat-member-count nunito-400">2 members</div>
             </div>
         </div>
         <div class="chat">
-            <Message></Message>
-            <Message></Message>
-            <Message></Message>
-            <Message></Message>
-            <Message></Message>
-            <Message></Message>
-            <Message></Message>
-            <Message></Message>
-            <Message></Message>
-            <Message></Message>
-            <Message></Message>
-            <Message></Message>
+            <Message 
+                v-for="message in messages"
+                :key="message.id"
+                :userSentMessage="message.sentByMe"
+                :senderName="message.senderName"
+                :content="message.text"
+                :timestamp="message.created_at">
+            </Message>
             <div class="input-bar">
                 <textarea class="nunito-400" placeholder="Message" type="text"></textarea>
             </div>  
         </div>
     </div>
+    
+    <div class="chat-container empty-chat" v-else>
+        <div class="empty-state">
+            <div class="empty-icon">💬</div>
+            <div class="empty-text nunito-600">Select a chat to start messaging</div>
+        </div>
+    </div>
 </template>
 
+<!-- <script>
+    export default {
+        props: {
+            id: {
+                type: Number,
+                default: 0,
+            }
+        }
+    }
+</script> -->
+
 <script setup>
-    import Message from './Message.vue'
+import { computed } from 'vue'
+import { useChatStore } from '@/chat-store';
+import Message from './Message.vue';
+
+const chatStore = useChatStore();
+
+const currentChat = computed(() => chatStore.currentChat);
+const messages = computed(() => chatStore.messages);
 </script>
+
 
 <style scoped>
     @import url(../css/fonts.css);
@@ -107,7 +129,7 @@
     .input-bar {
         position: sticky;
         bottom: 0;
-        box-shadow: 0px 0px 16px 2px rgba(0, 0, 0, 25%);
+        box-shadow: 0px 0px 16px 2px rgba(0, 0, 0, 35%);
 
         height: fit-content;
         max-height: 20vh;
@@ -135,5 +157,26 @@
         width: 100%;
         max-height: 20vh;
         box-sizing: border-box;
+    }
+
+    .empty-chat {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+
+    .empty-state {
+        text-align: center;
+        color: var(--accent-color);
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .empty-text {
+        font-size: 1rem;
     }
 </style>
