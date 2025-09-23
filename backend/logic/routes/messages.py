@@ -41,24 +41,16 @@ def get_message(id: int,
         return service.get_message(id)
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
-    
-@router.get('/', response_model=MessageSchema, status_code=200)
-def get_message_by_text(text: str,
-                        service: ServiceDependency):
-    try:
-        return service.get_message_by_text(text)
-    except AppError as e:
-        raise HTTPException(status_code=e.error_code, detail=e.message)
 
-@router.get('/', response_model=list[MessageSchema], status_code=200)
-def get_messages_by_text(text: str,
-                        service: ServiceDependency):
+@router.get('/search', response_model=list[MessageSchema], status_code=200)
+def search_messages(text: str,
+                    service: ServiceDependency):
     try:
         return service.get_messages_by_text(text)
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
     
-@router.put('/', response_model=MessageSchema, status_code=200)
+@router.put('/{id}', response_model=MessageSchema, status_code=200)
 def edit_message(id: int,
                  message_data: MessageUpdateSchema,
                  service: ServiceDependency):
@@ -67,7 +59,7 @@ def edit_message(id: int,
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
     
-@router.delete('/', status_code=204)
+@router.delete('/{id}', status_code=204)
 def remove_message(id: int,
                    service: ServiceDependency):
     try:

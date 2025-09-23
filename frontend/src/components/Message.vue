@@ -61,7 +61,6 @@
 
     .other-message-container {
         background-color: var(--primary-color);
-        background-color: var(--primary-color);
         color: black;
 
         width: fit-content;
@@ -70,6 +69,11 @@
 
         padding: 0.25rem;
         border-radius: 0.25rem;
+    }
+
+    .your-message-container::selection {
+        background-color: var(--primary-color);
+        color: var(--deep-color);
     }
 
     .other-message-container .message-sender {

@@ -36,7 +36,7 @@ class ParticipantRepository:
     
     def find_participation(self, user_id: int, chat_id: int) -> ParticipantSchema:
         participation = self.db.query(Participant).filter(Participant.user_id == user_id,
-                                                          Participant.chat_id == chat_id)
+                                                          Participant.chat_id == chat_id).first()
         
         if participation is None:
             raise NoResultFound()

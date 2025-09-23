@@ -65,7 +65,7 @@ async def get_all_users(service: ServiceDependency):
     return service.get_all_users()
 
 
-@router.put('/')
+@router.put('/{id}')
 async def change_user_data(change_data: ChangeOptions, 
                            user: UserDependency,
                            service: ServiceDependency,):
@@ -75,7 +75,7 @@ async def change_user_data(change_data: ChangeOptions,
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
 
-@router.delete('/', status_code=204)
+@router.delete('/{id}', status_code=204)
 async def remove_user(user_id: int,
                       service: ServiceDependency):
     try:
