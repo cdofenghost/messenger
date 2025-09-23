@@ -19,7 +19,7 @@
                 :timestamp="message.created_at">
             </Message>
             <div class="input-bar">
-                <textarea class="nunito-400" placeholder="Message" type="text"></textarea>
+                <textarea @keyup.enter="addMessage" class="nunito-400" placeholder="Message" type="text" v-model="inputMessage"></textarea>
             </div>  
         </div>
     </div>
@@ -32,17 +32,6 @@
     </div>
 </template>
 
-<!-- <script>
-    export default {
-        props: {
-            id: {
-                type: Number,
-                default: 0,
-            }
-        }
-    }
-</script> -->
-
 <script setup>
 import { computed } from 'vue'
 import { useChatStore } from '@/chat-store';
@@ -52,8 +41,25 @@ const chatStore = useChatStore();
 
 const currentChat = computed(() => chatStore.currentChat);
 const messages = computed(() => chatStore.messages);
+var inputMessage = '';
+
+function addMessage()
+{
+    // var message = { id: 32, senderId: 2, chat_id: currentChat, text: inputMessage, created_at: "19:00", updated_at: "19:00", sentByMe: true, senderName: "Andrew Neiman" }
+    // messages.value.push(message);
+    // inputMessage = '';
+}
 </script>
 
+<script>
+    export default {
+        data() {
+            return {
+
+            }
+        }
+    }
+</script>
 
 <style scoped>
     @import url(../css/fonts.css);
@@ -102,6 +108,7 @@ const messages = computed(() => chatStore.messages);
 
     .chat-member-count {
         color: var(--accent-color);
+        font-size: 0.7rem;
     }
 
     .chat {

@@ -1,6 +1,9 @@
 <template>
     <div class="main-frame">
-        <Chats></Chats>
+        <div class="left-frame">
+            <MiscBar></MiscBar>
+            <Chats></Chats>
+        </div>
         <ChatWindow></ChatWindow>
     </div>
 </template>
@@ -8,6 +11,7 @@
 <script setup>
     import Chats from './Chats.vue'
     import ChatWindow from './ChatWindow.vue'
+    import MiscBar from './MiscBar.vue'
 </script>
 
 <script>
