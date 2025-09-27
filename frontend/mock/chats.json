@@ -1,0 +1,14 @@
+{
+    "chats": [
+        {
+            "id": 1,
+            "name": "Terence Fletcher",
+            "lastMessage": "Andrew Neiman: Rushing...?"
+        },
+        {
+            "id": 2,
+            "name": "Yakov Grechnev",
+            "lastMessage": "Konstantin Denisov: wym"
+        }
+    ]
+}

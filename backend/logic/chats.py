@@ -2,14 +2,23 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import NoResultFound
 
 from .exceptions import  (
-    ChatNotFoundError,
+    ChatNotFoundError, MemberRoleError,
+    MemberNotFoundError, MemberAlreadyExistsError,
 )
+from .members import MemberRepository
 
 from ..models.chat import Chat
 from ..schemas.chat import ( 
     ChatSchema, ChatCreateSchema,
-    ChatUpdateSchema, CreatePublicChatSchema,
-    CreatePrivateChatSchema
+    ChatUpdateSchema,
+)
+from ..schemas.user import (
+    UserPublicSchema
+)
+from ..schemas.member import (
+    MemberRole, ADMIN, PARTICIPANT,
+    MemberSchema, MemberCreateSchema,
+    MemberUpdateSchema,
 )
 
 class ChatRepository:
@@ -75,8 +84,9 @@ class ChatRepository:
     
 
 class ChatService:
-    def __init__(self, repository: ChatRepository):
-        self.repository = repository
+    def __init__(self, chat_repository: ChatRepository, member_repository: MemberRepository):
+        self.repository = chat_repository
+        self.member_repository = member_repository
 
     def add_chat(self, chat_data: ChatCreateSchema) -> ChatSchema:
         chat_data.name = chat_data.name if chat_data.name else "Chat Name"
@@ -88,7 +98,7 @@ class ChatService:
         
         except NoResultFound:
             raise ChatNotFoundError()
-        
+    
     def get_chats_by_name(self, name: str) -> list[ChatSchema]:
         try:
             return self.repository.find_chats_by_name(name)
@@ -103,9 +113,58 @@ class ChatService:
         except NoResultFound:
             raise ChatNotFoundError()
         
-    def delete_chat(self, id: int):
+    def delete_chat(self, id: int) -> ChatSchema:
         try:
             return self.repository.delete_chat(id)
         
         except NoResultFound:
             raise ChatNotFoundError()
+
+    def remove_user_from_chat(self, user_id: int, user_remove_id: int, chat_id: int) -> UserPublicSchema:
+        is_user_admin = self.member_repository.check_user_role(user_id=user_id, chat_id=chat_id, role=ADMIN)
+        if not is_user_admin:
+            raise MemberRoleError("Only chat administrator can perform this aciton.")
+        
+        try:
+            user_to_remove = self.member_repository.find_member_by_user_and_chat(user_id=user_remove_id, chat_id=chat_id)
+            self.member_repository.delete_member(user_to_remove.id)
+
+        except NoResultFound:
+            raise MemberNotFoundError()
+
+    def get_chat_members(self, chat_id: int) -> list[UserPublicSchema]:
+        try:
+            return self.member_repository.find_chat_members(chat_id=chat_id)
+        except NoResultFound:
+            raise MemberNotFoundError()
+        
+    def get_user_chats(self, user_id: int) -> list[ChatSchema]:
+        try:
+            return self.member_repository.find_user_chats(user_id=user_id)
+        except NoResultFound:
+            raise MemberNotFoundError()
+        
+    def add_member_to_chat(self, create_schema: MemberCreateSchema) -> MemberSchema:
+        try:
+            if self.member_repository.is_user_in_chat(user_id=create_schema.user_id, chat_id=create_schema.chat_id):
+                raise MemberAlreadyExistsError()
+            return self.member_repository.add_member(create_schema=create_schema)
+        except NoResultFound:
+            raise MemberNotFoundError()
+        
+    def change_member_role(self, user_id: int, user_update_id: int, chat_id: int, update_schema: MemberUpdateSchema) -> MemberSchema:
+        is_user_admin = self.member_repository.check_user_role(user_id=user_id, chat_id=chat_id, role=ADMIN)
+        if not is_user_admin:
+            raise MemberRoleError("Only chat administrator can perform this aciton.")
+        
+        try:
+            return self.member_repository.update_member(user_id=user_update_id, chat_id=chat_id, 
+                                                        update_schema=update_schema)
+        except NoResultFound:
+            raise MemberNotFoundError()
+        
+    def get_member(self, chat_id: int, user_id: int) -> MemberSchema:
+        try:
+            return self.member_repository.find_member_by_user_and_chat(chat_id=chat_id, user_id=user_id)
+        except NoResultFound:
+            raise MemberNotFoundError()

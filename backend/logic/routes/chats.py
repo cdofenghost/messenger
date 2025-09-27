@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import Annotated, Optional
 
 from sqlalchemy.orm import Session
@@ -8,79 +8,37 @@ from ..exceptions import AppError
 from ..chats import ( 
     ChatRepository, ChatService,
     ChatCreateSchema, ChatSchema,
-    ChatUpdateSchema, CreatePublicChatSchema,
-    CreatePrivateChatSchema,
+    ChatUpdateSchema,
 )
-from ..particpants import (
-    ParticipantRepository, ParticipantService,
-    ParticipantCreateSchema, ParticipantSchema,
-    ParticipationSchema, 
+from ..members import (
+    MemberRepository,
+    MemberCreateSchema, MemberSchema,
+    MembershipSchema, MemberUpdateSchema
 )
 
 from ...database import get_db
-from ...schemas.user import UserSchema
-router = APIRouter(tags=["Chat"], prefix="/chats")
+from ...schemas.user import UserPublicSchema, UserSchema
+router = APIRouter()
+
+ADMIN = "Admin"
+PARTICIPANT = "Participant"
 
 def get_chat_repository(db: Session = Depends(get_db)) -> ChatRepository:
     return ChatRepository(db)
 
-def get_chat_service(repository: ChatRepository = Depends(get_chat_repository)) -> ChatService:
-    return ChatService(repository)
+def get_member_repository(db: Session = Depends(get_db)) -> MemberRepository:
+    return MemberRepository(db)
 
-def get_participant_repository(db: Session = Depends(get_db)) -> ParticipantRepository:
-    return ParticipantRepository(db)
-
-def get_participant_service(repository: ChatRepository = Depends(get_participant_repository)) -> ParticipantService:
-    return ParticipantService(repository)
+def get_chat_service(chat_repository: ChatRepository = Depends(get_chat_repository),
+                     member_repository: ChatRepository = Depends(get_member_repository)) -> ChatService:
+    return ChatService(chat_repository=chat_repository, member_repository=member_repository)
 
 ChatServiceDependency = Annotated[ChatService, Depends(get_chat_service)]
-ParticipantServiceDependency = Annotated[ParticipantService, Depends(get_participant_service)]
 UserDependency = Annotated[UserSchema, Depends(get_current_user)]
 
 UpdateSchema = Annotated[ChatUpdateSchema, Depends()]
 
-@router.post('/private', response_model=ChatSchema, status_code=201)
-async def create_private_chat(chat_data: CreatePrivateChatSchema,
-                              invited_user_id: int,
-                              user: UserDependency, 
-                              participant_service: ParticipantServiceDependency,
-                              chat_service: ChatServiceDependency) -> ChatSchema:
-    chat = chat_service.add_chat(chat_data)
-
-    participant_service.add_participant(ParticipantCreateSchema(user_id=user.id, chat_id=chat.id))
-    participant_service.add_participant(ParticipantCreateSchema(user_id=invited_user_id, chat_id=chat.id))
-
-    return chat
-
-
-@router.post('/public', response_model=ChatSchema, status_code=201)
-async def create_public_chat(chat_data: CreatePublicChatSchema,
-                             user: UserDependency,
-                             participant_service: ParticipantServiceDependency,
-                             chat_service: ChatServiceDependency,
-                             invited_user_id: Optional[int] = None) -> ChatSchema:
-    chat = chat_service.add_chat(chat_data)
-
-    participant_service.add_participant(ParticipantCreateSchema(user_id=user.id, chat_id=chat.id))
-    if invited_user_id:
-        participant_service.add_participant(ParticipantCreateSchema(user_id=user.id, chat_id=chat.id))
-
-    return chat
-
-
-@router.post('/public/add')
-async def add_user_to_public_chat(participant_schema: ParticipantCreateSchema,
-                                  user: UserDependency,
-                                  chat_service: ChatServiceDependency,
-                                  participant_service: ParticipantServiceDependency) -> ParticipantSchema:
-    try:
-        chat_service.get_chat(participant_schema.chat_id)
-        return participant_service.add_participant(user_id=participant_schema.user_id, chat_id=participant_schema.chat_id)
-
-    except AppError as e:
-        raise HTTPException(status_code=e.error_code, detail=e.message)
-    
-@router.get('/{id}', response_model=ChatSchema, status_code=200)
+@router.get('/chats/{id}', response_model=ChatSchema, status_code=200, tags=["Chat"])
 async def get_chat(id: int,
                    service: ChatServiceDependency) -> ChatSchema:
     try:
@@ -88,68 +46,89 @@ async def get_chat(id: int,
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
 
-@router.put('/', response_model=ChatSchema, status_code=200)
-async def update_chat(id: int, chat_data: UpdateSchema,
-                      service: ChatServiceDependency) -> ChatSchema:
+@router.put('/chats/{id}', response_model=ChatSchema, status_code=200, tags=["Chat"])
+async def update_chat(id: int, 
+                      service: ChatServiceDependency,
+                      chat_data: UpdateSchema) -> ChatSchema:
     try:
         return service.update_chat(id, chat_data)
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
     
-@router.delete('/', status_code=204)
+@router.delete('/chats/{id}', status_code=204, tags=["Chat"])
 async def delete_chat(id: int,
                       service: ChatServiceDependency):
     try:
         service.delete_chat(id)
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message) 
-    
 
-@router.get('/{id}/participants', response_model=list[ParticipantSchema])
-async def get_chat_participants(chat_id: int,
-                                service: ParticipantServiceDependency):
+@router.get('/chats/{сhat_id}/members', response_model=list[UserPublicSchema], tags=["Chat"])
+async def get_chat_members(chat_id: int,
+                           service: ChatServiceDependency):
     try:
-        return service.get_chat_participants(chat_id)
-    except AppError as e:
-        raise HTTPException(status_code=e.error_code, detail=e.message)
-    
-@router.get('/participant/{id}', response_model=ParticipantSchema, status_code=200)
-async def get_chat_participant(id: int,
-                                      service: ParticipantServiceDependency):
-    try:
-        return service.get_participant(id)
+        return service.get_chat_members(chat_id)
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
     
-@router.delete('/participant', status_code=204)
-async def remove_chat_participant(id: int,
-                                         service: ParticipantServiceDependency):
+@router.delete('/chats/{chat_id}/members/{user_id}', status_code=204, tags=["Chat"])
+async def remove_chat_member(chat_id: int, user_id: int,
+                             user: UserDependency,
+                             service: ChatServiceDependency):
     try:
-        service.remove_participant(id)
-    except AppError as e:
-        raise HTTPException(status_code=e.error_code, detail=e.message)
-
-
-@router.get('/participations', response_model=list[ParticipantSchema])
-async def get_user_participations(user_id: int,
-                                  service: ParticipantServiceDependency):
-    try:
-        return service.get_user_participations(user_id)
+        service.remove_user_from_chat(user_id=user.id, user_remove_id=user_id, chat_id=chat_id)
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
     
-@router.get('/participation', response_model=ParticipantSchema, status_code=200)
-async def get_user_participations(user_id: int,
-                                  service: ParticipantServiceDependency):
+@router.put('/chats/{chat_id}/members/{user_id}', response_model=MemberSchema,  status_code=201, tags=["Chat"])
+async def change_member_role(chat_id: int, user_id: int,
+                             user: UserDependency,
+                             service: ChatServiceDependency,
+                             update_schema: MemberUpdateSchema = Depends(),):
     try:
-        return service.get_participation(user_id)
+        return service.change_member_role(chat_id=chat_id, user_id=user.id,
+                                          user_update_id=user_id,
+                                          update_schema=update_schema)
+    except AppError as e:
+        raise HTTPException(status_code=e.error_code, detail=e.message)
+    
+@router.get('/chats/{chat_id}/members/{user_id}', response_model=MemberSchema, status_code=200, tags=["Chat"])
+async def get_member_info(chat_id: int, user_id: int,
+                          user: UserDependency,
+                          service: ChatServiceDependency):
+    try:
+        return service.get_member(chat_id=chat_id, user_id=user_id)
+    except AppError as e:
+        raise HTTPException(status_code=e.error_code, detail=e.message)
+    
+# Current User
+@router.get('/users/me/chats', status_code=200, tags=["Current User"], response_model=list[ChatSchema])
+async def get_user_chats(user: UserDependency,
+                         service: ChatServiceDependency):
+    try:
+        return service.get_user_chats(user.id)
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
 
-@router.delete('/participation', status_code=204)
-async def remove_chat_participation(participation: ParticipationSchema,
-                                           service: ParticipantServiceDependency):
+@router.post('/users/me/chats', response_model=ChatSchema, status_code=201, tags=["Current User"])
+async def create_chat(invited_user_id: int,
+                      user: UserDependency, 
+                      service: ChatServiceDependency,
+                      chat_data: ChatCreateSchema = Depends()) -> ChatSchema:
+    chat = service.add_chat(chat_data)
+
+    service.add_member_to_chat(MemberCreateSchema(user_id=user.id, chat_id=chat.id, role=ADMIN))
+    service.add_member_to_chat(MemberCreateSchema(user_id=invited_user_id, chat_id=chat.id, role=PARTICIPANT))
+
+    return chat
+
+@router.post('/chats/{chat_id}/members', tags=["Chat"])
+async def add_user_to_public_chat(chat_id: int,
+                                  invited_user_id: int,
+                                  service: ChatServiceDependency) -> MemberSchema:
     try:
-        service.remove_participation(participation)
+        member = MemberCreateSchema(user_id=invited_user_id, chat_id=chat_id, role=PARTICIPANT)
+        return service.add_member_to_chat(member)
+
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)

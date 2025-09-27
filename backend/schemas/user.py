@@ -9,6 +9,14 @@ class UserSchema(BaseModel):
     status: str = Field()
     hashed_password: str = Field()
 
+class UserPublicSchema(BaseModel):
+    id: int = Field()
+    name: str = Field(pattern="[А-Яа-яA-Za-z0-9]+", min_length=2, max_length=50)
+    bio: str = Field(max_length=250)
+    status: str = Field()
+
+    model_config = { 'from_attributes': True }
+
 class UserCredentialSchema(BaseModel):
     email: EmailStr = Field()
     password: str = Field(pattern="^[a-zA-Z0-9!#$%&*+.<=>?@^_]+$", min_length=8, max_length=16)

@@ -1,0 +1,31 @@
+{
+    "messages": [
+        {
+            "id": 1,
+            "sender_id": 2,
+            "chat_id": 2,
+            "senderName": "Andrew Neiman",
+            "text": "hey bro",
+            "created_at": "19:00",
+            "updated_at": "19:01" 
+        },
+        {
+            "id": 2,
+            "sender_id": 3,
+            "chat_id": 2,
+            "senderName": "Yakov Grechnev",
+            "text": "whats goood",
+            "created_at": "19:00",
+            "updated_at": "19:01" 
+        },
+        {
+            "id": 3,
+            "sender_id": 2,
+            "chat_id": 2,
+            "senderName": "Andrew Neiman",
+            "text": "im fine",
+            "created_at": "19:01",
+            "updated_at": "19:01" 
+        }
+    ]
+}

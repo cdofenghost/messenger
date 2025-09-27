@@ -3,14 +3,17 @@ from typing import Optional
 from pydantic import BaseModel, Field
 from datetime import datetime
 
+from .user import UserPublicSchema
+
 class MessageSchema(BaseModel):
-    id: int = Field()
-    sender_id: int = Field()
-    text: str = Field()
+    id: int
+    text: str
+    sender: UserPublicSchema
+    created_at: datetime
+    updated_at: datetime
 
 class MessageCreateSchema(BaseModel):
-    sender_id: int = Field()
     text: str = Field()
 
 class MessageUpdateSchema(BaseModel):
-    text: Optional[str] = None
+    text: str = Field()

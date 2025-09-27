@@ -1,0 +1,47 @@
+@property --deep-color {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #302e35;
+}
+
+@property --deep-color-selected {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #302e35;
+}
+
+@property --background-color {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #37353E;
+}
+
+@property --primary-color {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #D3DAD9;
+}
+
+@property --secondary-color {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #44444E;
+}
+
+@property --accent-color {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #715A5A;
+}
+
+@property --unnecessary-color-grey {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #686868;
+}
+
+@property --unnecessary-color-white {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #bbbbbb;
+}
