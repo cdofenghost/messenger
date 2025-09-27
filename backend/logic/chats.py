@@ -3,7 +3,7 @@ from sqlalchemy.exc import NoResultFound
 
 from .exceptions import  (
     ChatNotFoundError, MemberRoleError,
-    MemberNotFoundError,
+    MemberNotFoundError, MemberAlreadyExistsError,
 )
 from .members import MemberRepository
 
@@ -18,6 +18,7 @@ from ..schemas.user import (
 from ..schemas.member import (
     MemberRole, ADMIN, PARTICIPANT,
     MemberSchema, MemberCreateSchema,
+    MemberUpdateSchema,
 )
 
 class ChatRepository:
@@ -145,6 +146,25 @@ class ChatService:
         
     def add_member_to_chat(self, create_schema: MemberCreateSchema) -> MemberSchema:
         try:
+            if self.member_repository.is_user_in_chat(user_id=create_schema.user_id, chat_id=create_schema.chat_id):
+                raise MemberAlreadyExistsError()
             return self.member_repository.add_member(create_schema=create_schema)
+        except NoResultFound:
+            raise MemberNotFoundError()
+        
+    def change_member_role(self, user_id: int, user_update_id: int, chat_id: int, update_schema: MemberUpdateSchema) -> MemberSchema:
+        is_user_admin = self.member_repository.check_user_role(user_id=user_id, chat_id=chat_id, role=ADMIN)
+        if not is_user_admin:
+            raise MemberRoleError("Only chat administrator can perform this aciton.")
+        
+        try:
+            return self.member_repository.update_member(user_id=user_update_id, chat_id=chat_id, 
+                                                        update_schema=update_schema)
+        except NoResultFound:
+            raise MemberNotFoundError()
+        
+    def get_member(self, chat_id: int, user_id: int) -> MemberSchema:
+        try:
+            return self.member_repository.find_member_by_user_and_chat(chat_id=chat_id, user_id=user_id)
         except NoResultFound:
             raise MemberNotFoundError()

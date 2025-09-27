@@ -13,7 +13,7 @@ from ..chats import (
 from ..members import (
     MemberRepository,
     MemberCreateSchema, MemberSchema,
-    MembershipSchema,
+    MembershipSchema, MemberUpdateSchema
 )
 
 from ...database import get_db
@@ -79,8 +79,28 @@ async def remove_chat_member(chat_id: int, user_id: int,
         service.remove_user_from_chat(user_id=user.id, user_remove_id=user_id, chat_id=chat_id)
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
-
-
+    
+@router.put('/chats/{chat_id}/members/{user_id}', response_model=MemberSchema,  status_code=201, tags=["Chat"])
+async def change_member_role(chat_id: int, user_id: int,
+                             user: UserDependency,
+                             service: ChatServiceDependency,
+                             update_schema: MemberUpdateSchema = Depends(),):
+    try:
+        return service.change_member_role(chat_id=chat_id, user_id=user.id,
+                                          user_update_id=user_id,
+                                          update_schema=update_schema)
+    except AppError as e:
+        raise HTTPException(status_code=e.error_code, detail=e.message)
+    
+@router.get('/chats/{chat_id}/members/{user_id}', response_model=MemberSchema, status_code=200, tags=["Chat"])
+async def get_member_info(chat_id: int, user_id: int,
+                          user: UserDependency,
+                          service: ChatServiceDependency):
+    try:
+        return service.get_member(chat_id=chat_id, user_id=user_id)
+    except AppError as e:
+        raise HTTPException(status_code=e.error_code, detail=e.message)
+    
 # Current User
 @router.get('/users/me/chats', status_code=200, tags=["Current User"], response_model=list[ChatSchema])
 async def get_user_chats(user: UserDependency,

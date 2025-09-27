@@ -2,8 +2,8 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr, Field
 from typing import Literal
 
-ADMIN = Literal["Admin"]
-PARTICIPANT = Literal["Participant"]
+ADMIN = "Admin"
+PARTICIPANT = "Participant"
 MemberRole = Literal["Participant", "Admin"]
 
 class MemberSchema(BaseModel):
@@ -18,8 +18,6 @@ class MemberCreateSchema(BaseModel):
     role: MemberRole = "Participant"
 
 class MemberUpdateSchema(BaseModel):
-    user_id: int = Field()
-    chat_id: int = Field()
     role: MemberRole = "Participant"
 
 class MembershipSchema(MemberCreateSchema):

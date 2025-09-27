@@ -70,9 +70,9 @@ class MemberRepository:
                                  bio=user.bio, status=user.status, hashed_password=user.hashed_password) 
                                  for user in users]
     
-    def update_member(self, update_schema: MemberUpdateSchema) -> MemberSchema:
-        member = self.db.query(Member).filter(Member.user_id == update_schema.user_id,
-                                              Member.chat_id == update_schema.chat_id).first()
+    def update_member(self, user_id: int, chat_id: int, update_schema: MemberUpdateSchema) -> MemberSchema:
+        member = self.db.query(Member).filter(Member.user_id == user_id,
+                                              Member.chat_id == chat_id).first()
         if member is None:
             raise NoResultFound()
         
@@ -134,4 +134,4 @@ class MemberRepository:
     def check_user_role(self, user_id: int, chat_id: int, role: MemberRole) -> bool:
         member = self.db.query(Member).filter(Member.user_id == user_id,
                                               Member.chat_id == chat_id).first()
-        return member.role == role        
+        return member.role == role
