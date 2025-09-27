@@ -47,7 +47,7 @@ function addMessage()
 {
     // var message = { id: 32, senderId: 2, chat_id: currentChat, text: inputMessage, created_at: "19:00", updated_at: "19:00", sentByMe: true, senderName: "Andrew Neiman" }
     // messages.value.push(message);
-    // inputMessage = '';
+    // inputMessage = '';  
 }
 </script>
 

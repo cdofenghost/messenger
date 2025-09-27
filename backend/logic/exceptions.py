@@ -30,15 +30,19 @@ class ChatNotFoundError(AppError):
         super().__init__(message, error_code)
 
 
-class ParticipantNotFoundError(AppError):
-    def __init__(self, message: str = "Participant not found.", error_code: int = 404):
+class MemberNotFoundError(AppError):
+    def __init__(self, message: str = "Member not found.", error_code: int = 404):
         super().__init__(message, error_code)
 
-class ParticipantAlreadyExistsError(AppError):
-    def __init__(self, message: str = "Participant has already been added to this chat.", error_code: int = 400):
+class MemberAlreadyExistsError(AppError):
+    def __init__(self, message: str = "Member has already been added to this chat.", error_code: int = 400):
         super().__init__(message, error_code)
 
 
 class MessageNotFoundError(AppError):
-    def __init__(self, message: str = "Message not found.", error_code: int = 400):
+    def __init__(self, message: str = "Message not found.", error_code: int = 404):
+        super().__init__(message, error_code)
+
+class MemberRoleError(AppError):
+    def __init__(self, message: str = "Your role in chat doesn't allow you to perform this action.", error_code: int = 401):
         super().__init__(message, error_code)

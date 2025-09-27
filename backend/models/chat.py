@@ -12,4 +12,4 @@ class Chat(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now()) 
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now()) 
 
-    participants = relationship("Participant", back_populates="chat", cascade="all, delete")
+    members = relationship("Member", back_populates="chat", cascade="all, delete")

@@ -1,4 +1,5 @@
 
+
 def generate_name() -> str:
     from random import randint
     names = ["Жираф", "Енот", "Медведь", "Собака", "Цыпленок",
