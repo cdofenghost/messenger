@@ -1,4 +1,7 @@
 <template>
+    <div class="date-blob" v-if="withNewDate">
+        {{ datestamp }}
+    </div>
     <div v-if="!userSentMessage" class="other-message-container">
         <div class="message-sender nunito-800">
             <b>{{ senderName }}</b>
@@ -37,6 +40,14 @@
             timestamp: {
                 type: String,
                 default: "hh:mm"
+            },
+            withNewDate: {
+                type: Boolean,
+                default: false,
+            },
+            datestamp: {
+                type: String,
+                default: "datestamp"
             }
         }
     }
@@ -45,6 +56,21 @@
 <style scoped>
     @import url(../css/fonts.css);
     @import url(../css/colors.css);
+
+    .date-blob {
+        position: sticky;
+        text-align: center;
+        align-self: center;
+
+        background-color: var(--primary-color);
+        color: var(--deep-color);
+
+        padding: 0.25rem;
+        border-radius: 0.25rem;
+        box-shadow: 0px 0px 16px 2px rgba(0, 0, 0, 35%);
+
+        width: fit-content;
+    }
 
     .your-message-container {
         background-color: var(--accent-color);

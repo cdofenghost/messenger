@@ -63,7 +63,7 @@ async def delete_chat(id: int,
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message) 
 
-@router.get('/chats/{сhat_id}/members', response_model=list[UserPublicSchema], tags=["Chat"])
+@router.get('/chats/{chat_id}/members', response_model=list[UserPublicSchema], tags=["Chat"])
 async def get_chat_members(chat_id: int,
                            service: ChatServiceDependency):
     try:

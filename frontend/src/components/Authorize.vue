@@ -23,6 +23,7 @@
 	import { BASE_URL } from '@/other';
 	const headers = new Headers();
 	headers.append('Content-Type', 'application/json');
+	headers.append('Access-Control-Allow-Origin', `${BASE_URL}`)
 
 	export default {
 		data() {
@@ -32,21 +33,23 @@
 			}
 		},
 		methods: {
-			async authorizeUser()
+			async authorizeUser(event)
 			{
 				event.preventDefault();
 				const errorPopup = document.getElementById('error-msg');
 				const approvePopup = document.getElementById('approve-msg');
 				try {
-					const response = await fetch(`${BASE_URL}/users/authorize`, {
+					const response = await fetch(`/api/users/authorize`, {
 						method: "POST",
 						headers: headers,
+						credentials: 'include',
 						body: JSON.stringify({
 							email: this.email, 
 							password: this.password, 
 						}),
 					});
 
+					console.log('Response headers:', response.headers);
 					if (!response.ok) throw new Error(`${(await response.json()).detail}`);
 
 					else {

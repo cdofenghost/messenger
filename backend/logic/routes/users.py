@@ -71,7 +71,11 @@ async def authorize(credentials: UserCredentialSchema,
     try:
         authorized_user: UserSchema = service.verify_credentials(credentials)
         token = generate_access_token(authorized_user.id, authorized_user.email)
-        response.set_cookie("token", token)
+        response.set_cookie("token", token, 
+                            httponly=True,
+                            samesite="lax",
+                            max_age=30*24*3600,
+                            secure=False)
 
         return {"access_token": token, "token_type": "bearer"}
     

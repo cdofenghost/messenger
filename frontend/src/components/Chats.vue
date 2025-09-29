@@ -14,22 +14,24 @@
 
 <script setup>
 import { useChatStore } from '@/chat-store';
+import { useUserStore } from '@/user-store';
 import { onMounted, ref, computed } from 'vue'
 import Chat from './Chat.vue'
 
 const chatStore = useChatStore();
-const chats = ref([]);
 
+const chats = ref([]);
 const currentChatId = computed(() => chatStore.currentChatID);
 
 onMounted(load_chats);
 
 async function load_chats(params) {
     try {
-        const response = await fetch("../../mock/chats.json");
+        const response = await fetch("/api/users/me/chats");
         const chatDB = await response.json();
-        chats.value = chatDB.chats;
-        chatStore.chats = chatDB.chats;
+        console.log(chatDB);
+        chats.value = chatDB;
+        chatStore.chats = chatDB;
         
         if (chats.value.length > 0 && !currentChatId.value) {
             chatStore.setCurrentChat(chats.value[0].id);

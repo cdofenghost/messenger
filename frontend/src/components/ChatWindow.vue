@@ -5,8 +5,8 @@
                 <img src="/src/static/imgs/666175.png"></img>
             </div>
             <div class="detail-info">
-                <div class="chat-name nunito-600">{{ currentChat.name }}</div>
-                <div class="chat-member-count nunito-400">2 members</div>
+                <div class="chat-name nunito-600">{{ currentChat.name }} <span class="chat-type">({{currentChat.type}} Chat)</span></div>
+                <div class="chat-member-count nunito-400">{{ members.length }} members</div>
             </div>
         </div>
         <div class="chat">
@@ -14,9 +14,11 @@
                 v-for="message in messages"
                 :key="message.id"
                 :userSentMessage="message.sentByMe"
-                :senderName="message.senderName"
+                :senderName="message.sender.name"
                 :content="message.text"
-                :timestamp="message.created_at">
+                :timestamp="message.created_time"
+                :withNewDate="message.withNewDate"
+                :datestamp="message.datestamp">
             </Message>
             <div class="input-bar">
                 <textarea @keyup.enter="addMessage" class="nunito-400" placeholder="Message" type="text" v-model="inputMessage"></textarea>
@@ -38,7 +40,7 @@ import { useChatStore } from '@/chat-store';
 import Message from './Message.vue';
 
 const chatStore = useChatStore();
-
+const members = computed(() => chatStore.members);
 const currentChat = computed(() => chatStore.currentChat);
 const messages = computed(() => chatStore.messages);
 var inputMessage = '';
@@ -64,6 +66,12 @@ function addMessage()
 <style scoped>
     @import url(../css/fonts.css);
     @import url(../css/colors.css);
+
+    .chat-type {
+        color: var(--secondary-color); 
+        font-size: 0.6rem;
+        font-style: italic;
+    }
 
     .chat-container {
         display: flex;

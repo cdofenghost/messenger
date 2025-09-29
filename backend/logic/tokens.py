@@ -36,6 +36,7 @@ def generate_access_token(user_id: int, email: str) -> str:
 async def get_current_user(request: Request,
                            service: ServiceDependency) -> UserSchema:
     cookie_token: str = request.cookies.get("token")
+    print(request.cookies)
 
     if cookie_token is None:
         raise HTTPException(status_code=401, detail="You need to authorize to perform this action.")
