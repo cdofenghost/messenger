@@ -45,11 +45,29 @@ const currentChat = computed(() => chatStore.currentChat);
 const messages = computed(() => chatStore.messages);
 var inputMessage = '';
 
-function addMessage()
+const headers = new Headers();
+headers.append('Content-Type', 'application/json');
+
+async function addMessage()
 {
-    // var message = { id: 32, senderId: 2, chat_id: currentChat, text: inputMessage, created_at: "19:00", updated_at: "19:00", sentByMe: true, senderName: "Andrew Neiman" }
-    // messages.value.push(message);
-    // inputMessage = '';  
+    try {
+        const response = await fetch(`/api/chats/${chatStore.currentChatID}/messages`, {
+            headers: headers,
+            method: "POST",
+            body: JSON.stringify({text: inputMessage}),
+        });
+
+        if (response.ok) 
+        {
+            var message = await response.json();
+            message = chatStore.addNewMessage(message);
+        }
+
+        else throw new Error(response.json());
+    } catch (error) {
+        console.error(error);
+    }
+    inputMessage = '';  
 }
 </script>
 

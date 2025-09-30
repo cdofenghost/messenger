@@ -74,6 +74,29 @@ export const useChatStore = defineStore('chat', () => {
         }
     }
 
+    function addNewMessage(message)
+    {
+        const lastMessage = messages.value[messages.value.length -1];
+        const lastDate = new Date(lastMessage.created_at);
+
+        var date = new Date(message.created_at);
+        message.created_time = timeFormat.format(date);
+
+        const diffTime = Math.abs(date - lastDate);
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays >= 1)
+        {
+            message.datestamp = datestampFormat.format(date);
+            message.withNewDate = true;
+        }
+
+        else console.log(diffDays);
+        message.sentByMe = useUserStore().userData.id == message.sender.id;
+
+        messages.value.push(message);
+    }
+
     return {
         currentChatID,
         currentChat,
@@ -82,5 +105,6 @@ export const useChatStore = defineStore('chat', () => {
         members,
         setCurrentChat,
         loadMessages,
+        addNewMessage
     }
 });

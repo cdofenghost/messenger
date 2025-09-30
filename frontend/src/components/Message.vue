@@ -2,7 +2,7 @@
     <div class="date-blob" v-if="withNewDate">
         {{ datestamp }}
     </div>
-    <div v-if="!userSentMessage" class="other-message-container">
+    <div ref="targetComponent" v-if="!userSentMessage" class="other-message-container">
         <div class="message-sender nunito-800">
             <b>{{ senderName }}</b>
         </div>
@@ -11,7 +11,7 @@
         </div>
         <div class="timestamp">{{ timestamp }}</div>  
     </div>
-    <div v-if="userSentMessage" class="your-message-container">
+    <div ref="targetComponent" v-if="userSentMessage" class="your-message-container">
         <div class="message-sender nunito-800">
             <b>{{ senderName }}</b>
         </div>
@@ -24,6 +24,9 @@
 
 <script>
     export default {
+        mounted() {
+            this.$refs.targetComponent.scrollIntoView({ behavior: 'smooth'});
+        },
         props: {
             userSentMessage: {
                 type: Boolean,
