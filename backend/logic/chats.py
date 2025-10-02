@@ -6,11 +6,12 @@ from .exceptions import  (
     MemberNotFoundError, MemberAlreadyExistsError,
 )
 from .members import MemberRepository
+from .messages import MessageRepository
 
 from ..models.chat import Chat
 from ..schemas.chat import ( 
     ChatSchema, ChatCreateSchema,
-    ChatUpdateSchema,
+    ChatUpdateSchema, ChatPopupSchema
 )
 from ..schemas.user import (
     UserPublicSchema
@@ -45,7 +46,7 @@ class ChatRepository:
         chat = self.db.query(Chat).filter(Chat.id == id).first()
 
         if chat is None:
-            raise NoResultFound()
+            raise NoResultFound("Chat not found.")
         
         return self.__to_chat_schema(chat)
     
@@ -84,9 +85,12 @@ class ChatRepository:
     
 
 class ChatService:
-    def __init__(self, chat_repository: ChatRepository, member_repository: MemberRepository):
+    def __init__(self, chat_repository: ChatRepository, 
+                 member_repository: MemberRepository,
+                 message_repository: MessageRepository):
         self.repository = chat_repository
         self.member_repository = member_repository
+        self.message_repository = message_repository
 
     def add_chat(self, chat_data: ChatCreateSchema) -> ChatSchema:
         chat_data.name = chat_data.name if chat_data.name else "Chat Name"
@@ -99,6 +103,16 @@ class ChatService:
         except NoResultFound:
             raise ChatNotFoundError()
     
+    def get_chat_popup(self, chat_id: int) -> ChatPopupSchema:
+        try:
+            chat = self.repository.find_chat(id=chat_id)
+            last_message = self.message_repository.find_last_chat_message(chat_id=chat_id)
+            return ChatPopupSchema(id=chat.id, name=chat.name, type=chat.type,
+                                   created_at=chat.created_at, updated_at=chat.updated_at,
+                                   last_message=last_message)
+        except NoResultFound as e:
+            raise ChatNotFoundError(str(e))
+        
     def get_chats_by_name(self, name: str) -> list[ChatSchema]:
         try:
             return self.repository.find_chats_by_name(name)
@@ -138,9 +152,13 @@ class ChatService:
         except NoResultFound:
             raise MemberNotFoundError()
         
-    def get_user_chats(self, user_id: int) -> list[ChatSchema]:
+    def get_user_chats(self, user_id: int) -> list[ChatPopupSchema]:
         try:
-            return self.member_repository.find_user_chats(user_id=user_id)
+            chats = self.member_repository.find_user_chats(user_id=user_id)
+            return [ChatPopupSchema(id=chat.id, name=chat.name, type=chat.type,
+                    created_at=chat.created_at, updated_at=chat.updated_at,
+                    last_message=self.message_repository.find_last_chat_message(chat_id=chat.id)) for chat in chats]
+        
         except NoResultFound:
             raise MemberNotFoundError()
         

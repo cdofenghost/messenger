@@ -4,7 +4,7 @@
             v-for="chat in chats"
             :key="chat.id"
             :chatName="chat.name"
-            :lastMessage="chat.lastMessage"
+            :lastMessage="`${chat.last_message?.sender?.name || 'sender'}: ${chat.last_message?.text || 'text'}`"
             :chatIconName="chat.icon"
             :isActive="chat.id === currentChatId"
             @click="setCurrentChat(chat.id)">
@@ -39,7 +39,7 @@ async function load_chats(params) {
     } catch (error) {
         console.error('Error loading chats:', error);
     }
-}
+} 
 
 function setCurrentChat(id) {
     chatStore.setCurrentChat(id)

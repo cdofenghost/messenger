@@ -58,6 +58,14 @@ class MessageRepository:
         
         return [self.__to_message_schema(message=message) 
                 for message in chat_messages]
+    
+    def find_last_chat_message(self, chat_id: int) -> MessageSchema:
+        message = self.db.query(Message).join(Member).where(Member.chat_id == chat_id).order_by(Message.created_at.desc()).first()
+
+        if message is None:
+            return None
+        
+        return self.__to_message_schema(message=message)
 
     def update_message(self, id: int, update_schema: MessageUpdateSchema) -> MessageSchema:
         message = self.db.query(Message).filter(Message.id == id).first()
@@ -82,6 +90,7 @@ class MessageRepository:
 
         return self.__to_message_schema(message=message)
     
+   
 class MessageService:
     def __init__(self, message_repository: MessageRepository, member_repository: MemberRepository):
         self.repository = message_repository

@@ -8,13 +8,14 @@ from ..exceptions import AppError
 from ..chats import ( 
     ChatRepository, ChatService,
     ChatCreateSchema, ChatSchema,
-    ChatUpdateSchema,
+    ChatUpdateSchema, ChatPopupSchema,
 )
 from ..members import (
     MemberRepository,
     MemberCreateSchema, MemberSchema,
     MembershipSchema, MemberUpdateSchema
 )
+from ..messages import MessageRepository
 
 from ...database import get_db
 from ...schemas.user import UserPublicSchema, UserSchema
@@ -29,22 +30,29 @@ def get_chat_repository(db: Session = Depends(get_db)) -> ChatRepository:
 def get_member_repository(db: Session = Depends(get_db)) -> MemberRepository:
     return MemberRepository(db)
 
+def get_message_repository(db: Session = Depends(get_db)) -> MessageRepository:
+    return MessageRepository(db)
+
 def get_chat_service(chat_repository: ChatRepository = Depends(get_chat_repository),
-                     member_repository: ChatRepository = Depends(get_member_repository)) -> ChatService:
-    return ChatService(chat_repository=chat_repository, member_repository=member_repository)
+                     member_repository: ChatRepository = Depends(get_member_repository),
+                     message_repository: MessageRepository = Depends(get_message_repository)) -> ChatService:
+    return ChatService(chat_repository=chat_repository, 
+                       member_repository=member_repository,
+                       message_repository=message_repository)
 
 ChatServiceDependency = Annotated[ChatService, Depends(get_chat_service)]
 UserDependency = Annotated[UserSchema, Depends(get_current_user)]
 
 UpdateSchema = Annotated[ChatUpdateSchema, Depends()]
 
-@router.get('/chats/{id}', response_model=ChatSchema, status_code=200, tags=["Chat"])
-async def get_chat(id: int,
-                   service: ChatServiceDependency) -> ChatSchema:
+@router.get('/chats/{id}', response_model=ChatPopupSchema, status_code=200, tags=["Chat"])
+async def get_popup_chat(id: int,
+                         service: ChatServiceDependency) -> ChatPopupSchema:
     try:
-        return service.get_chat(id)
+        return service.get_chat_popup(chat_id=id)
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
+
 
 @router.put('/chats/{id}', response_model=ChatSchema, status_code=200, tags=["Chat"])
 async def update_chat(id: int, 
@@ -102,7 +110,7 @@ async def get_member_info(chat_id: int, user_id: int,
         raise HTTPException(status_code=e.error_code, detail=e.message)
     
 # Current User
-@router.get('/users/me/chats', status_code=200, tags=["Current User"], response_model=list[ChatSchema])
+@router.get('/users/me/chats', status_code=200, tags=["Current User"], response_model=list[ChatPopupSchema])
 async def get_user_chats(user: UserDependency,
                          service: ChatServiceDependency):
     try:
