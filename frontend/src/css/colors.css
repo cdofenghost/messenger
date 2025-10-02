@@ -1,47 +1,65 @@
-@property --deep-color {
-    syntax: "<color>";
-    inherits: false;
-    initial-value: #302e35;
-}
-
-@property --deep-color-selected {
-    syntax: "<color>";
-    inherits: false;
-    initial-value: #302e35;
-}
-
 @property --background-color {
     syntax: "<color>";
     inherits: false;
-    initial-value: #37353E;
+    initial-value: #FDFDFD;
 }
 
 @property --primary-color {
     syntax: "<color>";
     inherits: false;
-    initial-value: #D3DAD9;
+    initial-value: #9E77ED;
 }
 
-@property --secondary-color {
+@property --white-color {
     syntax: "<color>";
     inherits: false;
-    initial-value: #44444E;
+    initial-value: #FDFDFD;
 }
 
-@property --accent-color {
+@property --grey-color {
     syntax: "<color>";
     inherits: false;
-    initial-value: #715A5A;
+    initial-value: #E9EAEB;
 }
 
-@property --unnecessary-color-grey {
+@property --error-color {
     syntax: "<color>";
     inherits: false;
-    initial-value: #686868;
+    initial-value: #F04438;
 }
 
-@property --unnecessary-color-white {
+@property --warning-color {
     syntax: "<color>";
     inherits: false;
-    initial-value: #bbbbbb;
+    initial-value: #FDB022;
+}
+
+@property --success-color {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #12B76A;
+}
+
+@property --black-color {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #0A0D12;
+}
+
+@property --accent-color-deep {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #7F56D9;
+}
+
+@property --accent-color-light {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #D6BBFB;
+}
+
+@property --light-primary-color {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #F9F5FF;
 }

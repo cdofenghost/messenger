@@ -3,7 +3,9 @@
         <div class="left-frame">
             <MiscBar
             :key="userStore.userData?.id"
-            :userName="userStore.userData?.name"></MiscBar>
+            :userName="userStore.userData?.name"
+            :email="userStore.userData?.email"
+            :bio="userStore.userData?.bio"></MiscBar>
             <Chats></Chats>
         </div>
         <ChatWindow></ChatWindow>

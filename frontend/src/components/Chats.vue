@@ -5,6 +5,7 @@
             :key="chat.id"
             :chatName="chat.name"
             :lastMessage="`${chat.last_message?.sender?.name || 'sender'}: ${chat.last_message?.text || 'text'}`"
+            :lastTime="timeFormat.format(new Date(chat.last_message?.created_at || null)) || 'sender'"
             :chatIconName="chat.icon"
             :isActive="chat.id === currentChatId"
             @click="setCurrentChat(chat.id)">
@@ -18,8 +19,12 @@ import { useUserStore } from '@/user-store';
 import { onMounted, ref, computed } from 'vue'
 import Chat from './Chat.vue'
 
-const chatStore = useChatStore();
+const timeFormat = new Intl.DateTimeFormat('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+});
 
+const chatStore = useChatStore();
 const chats = ref([]);
 const currentChatId = computed(() => chatStore.currentChatID);
 
@@ -57,8 +62,9 @@ function setCurrentChat(id) {
         height: fit-content;
 
         gap: 0.25rem;
-        background-color: var(--primary-color);
-        
+        background-color: var(--white-color);
+        border: 2px solid var(--primary-color);  
+              
         padding: 0.25rem;
         border-radius: 0.25rem;
     }

@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="last-msg-time nunito-200">
-                03:03
+                {{ lastTime }}
             </div>
         </div>
     </div>
@@ -38,6 +38,10 @@
                 type: String,
                 default: "Sender: Lore"
             },
+            lastTime: {
+                type: String,
+                default: "2025-10-02T21:35:39.595845+07:00"
+            },
             chatIconName: {
                 type: String,
                 default: "666175.png"
@@ -46,7 +50,7 @@
                 type: Boolean,
                 default: false
             }
-        }
+        },
     }
 </script>
 
@@ -54,8 +58,12 @@
     @import url(../css/fonts.css);
     @import url(../css/colors.css);
 
+    .last-msg-time {
+        font-size: small;
+    }
+
     .chat-frame:hover {
-        background-color: var(--background-color);
+        background-color: var(--grey-color);
 
         transition: background-color 0.1s ease-in;
     }
@@ -63,27 +71,23 @@
     .chat-frame {
         background-color: var(--accent-color);
         border: 4px solid transparent;
-        transition: background-color 0.1s ease-in;
+        transition: background-color 0.3s ease-out;
     }
 
     .chat-frame.active-chat {
-        color: var(--deep-color);
-        background-color: var(--primary-color);
-        border: 4px solid var(--accent-color);
-
-        transition: background-color 0.05s ease-in,
-                    border 0.05s ease-in,
-                    color 0.05s ease-in;
+        color: var(--white-color);
+        background-color: var(--accent-color-deep);
+        border: 4px solid transparent;
     }
 
     .chat-frame {
         font-size: 0.7rem;
 
         display: flex;
-        background-color: var(--deep-color);
+        background-color: var(--white-color);
         border-radius: 0.5rem;
 
-        color: var(--primary-color);
+        color: var(--black-color);
         font-size: 0.75rem;
         padding: 0.25rem;
 
@@ -103,7 +107,7 @@
         width: 48px;
         height: 48px;
         border-radius: 50%;
-        background-color: var(--accent-color);
+        background: linear-gradient(90deg, #7F56D9, #9E77ED);
         overflow: hidden;
 
         box-sizing: content-box;

@@ -147,15 +147,17 @@ class UserService:
         except NoResultFound:
             raise UserNotFoundError()
         
+    def is_already_registered(self, email: str):
+        try:
+            self.get_user_by_email(email=email)
+            raise UserAlreadyRegisteredError()
+        except:
+            return True
     
     def is_email_valid(self, email: str):
         try:
             validate_email(email, check_deliverability=True)
-            self.get_user_by_email(email=email)
-            raise UserAlreadyRegisteredError()
-        
-        except NoResultFound:
-            return
+            return True
         
         except (EmailUndeliverableError, EmailNotValidError):
             raise InvalidEmailError()

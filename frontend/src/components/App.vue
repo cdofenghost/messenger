@@ -17,8 +17,8 @@
 	}
 
 	html::selection{
-		color: var(--primary-color);
-		background-color: var(--accent-color);
+		color: var(--white-color);
+		background-color: var(--primary-color);
 	}
 
 	body {

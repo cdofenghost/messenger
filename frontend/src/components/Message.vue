@@ -11,7 +11,7 @@
         </div>
         <div class="timestamp">{{ timestamp }}</div>  
     </div>
-    <div ref="targetComponent" v-if="userSentMessage" class="your-message-container">
+    <div ref="targetComponent" v-else="userSentMessage" class="your-message-container">
         <div class="message-sender nunito-800">
             <b>{{ senderName }}</b>
         </div>
@@ -65,19 +65,18 @@
         text-align: center;
         align-self: center;
 
-        background-color: var(--primary-color);
-        color: var(--deep-color);
+        background-color: var(--white-color);
+        color: var(--black-color);
 
         padding: 0.25rem;
         border-radius: 0.25rem;
-        box-shadow: 0px 0px 16px 2px rgba(0, 0, 0, 35%);
 
         width: fit-content;
     }
 
     .your-message-container {
-        background-color: var(--accent-color);
-        color: var(--primary-color);
+        background-color: var(--primary-color);
+        color: var(--white-color);
         align-self: flex-end;
 
         width: fit-content;
@@ -85,11 +84,11 @@
         height: fit-content;
 
         padding: 0.25rem;
-        border-radius: 0.25rem;
+        border-radius: 0.5rem;
     }
 
     .other-message-container {
-        background-color: var(--primary-color);
+        background-color: var(--white-color);
         color: black;
 
         width: fit-content;
@@ -97,7 +96,7 @@
         height: fit-content;
 
         padding: 0.25rem;
-        border-radius: 0.25rem;
+        border-radius: 0.5rem;
     }
 
     .your-message-container::selection {
@@ -107,11 +106,11 @@
 
     .other-message-container .message-sender {
         font-size: 0.6rem;
-        color: var(--accent-color);
+        color: var(--black-color);
     }
     .your-message-container .message-sender {
         font-size: 0.6rem;
-        color: var(--primary-color);
+        color: var(--white-color);
     }
 
     .timestamp {

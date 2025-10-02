@@ -86,7 +86,7 @@ async function addMessage()
     @import url(../css/colors.css);
 
     .chat-type {
-        color: var(--secondary-color); 
+        color: var(--accent-color-deep); 
         font-size: 0.6rem;
         font-style: italic;
     }
@@ -95,7 +95,9 @@ async function addMessage()
         display: flex;
         flex-direction: column;
 
-        background-color: var(--primary-color);
+        background-color: var(--white-color);
+        border: 2px solid var(--primary-color);
+        box-shadow: 0px 0px 16px 2px rgba(0, 0, 0, 35%);
         border-radius: 0.25rem;
         font-size: 0.75rem;
 
@@ -110,7 +112,7 @@ async function addMessage()
         width: 2rem;
         height: 2rem;
         border-radius: 50%;
-        background-color: var(--accent-color);
+        background: linear-gradient(90deg, #7F56D9, #9E77ED);
         overflow: hidden;
 
         box-sizing: border-box;
@@ -143,7 +145,7 @@ async function addMessage()
         position: relative;
         gap: 0.25rem;
 
-        background-color: var(--deep-color);
+        background: linear-gradient(45deg, var(--grey-color));
         color: var(--primary-color);
 
         width: 100%;
@@ -168,7 +170,7 @@ async function addMessage()
         max-height: 20vh;
         width: 100%;
 
-        background-color: var(--primary-color);
+        background-color: var(--white-color);
         padding: 0.25rem;
         border-radius: 0.25rem;
 
@@ -183,7 +185,8 @@ async function addMessage()
         border: none;
         outline: none;
 
-        background-color: var(--primary-color);
+        background-color: var(--white-color);
+        caret-color: var(--primary-color);
         resize: none;
         field-sizing: content;
 
