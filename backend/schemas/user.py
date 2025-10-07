@@ -1,5 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel, EmailStr, Field
+from ..models.user import User
 
 class UserSchema(BaseModel):
     id: int = Field()

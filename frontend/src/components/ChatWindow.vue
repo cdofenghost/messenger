@@ -4,10 +4,11 @@
             <div class="chat-icon">
                 <img src="/src/static/imgs/666175.png"></img>
             </div>
-            <div class="detail-info">
+            <div class="detail-info" style="width: 100%; box-sizing: border-box;">
                 <div class="chat-name nunito-600">{{ currentChat.name }} <span class="chat-type">({{currentChat.type}} Chat)</span></div>
                 <div class="chat-member-count nunito-400">{{ members.length }} members</div>
             </div>
+            <div class="mini-button"><font-awesome-icon icon='plus'></font-awesome-icon></div>
         </div>
         <div class="chat">
             <Message 
@@ -48,26 +49,30 @@ var inputMessage = '';
 const headers = new Headers();
 headers.append('Content-Type', 'application/json');
 
-async function addMessage()
+async function addMessage(event)
 {
-    try {
-        const response = await fetch(`/api/chats/${chatStore.currentChatID}/messages`, {
-            headers: headers,
-            method: "POST",
-            body: JSON.stringify({text: inputMessage}),
-        });
+    console.log(inputMessage);  
+    if (inputMessage.trim().length > 0 && !event.shiftKey)
+    {
+        try {
+            const response = await fetch(`/api/chats/${chatStore.currentChatID}/messages`, {
+                headers: headers,
+                method: "POST",
+                body: JSON.stringify({text: inputMessage}),
+            });
 
-        if (response.ok) 
-        {
-            var message = await response.json();
-            message = chatStore.addNewMessage(message);
+            if (response.ok) 
+            {
+                var message = await response.json();
+                message = chatStore.addNewMessage(message);
+            }
+
+            else throw new Error(response.json());
+        } catch (error) {
+            console.error(error);
         }
-
-        else throw new Error(response.json());
-    } catch (error) {
-        console.error(error);
+        inputMessage = '';  
     }
-    inputMessage = '';  
 }
 </script>
 
@@ -89,6 +94,16 @@ async function addMessage()
         color: var(--accent-color-deep); 
         font-size: 0.6rem;
         font-style: italic;
+    }
+
+    .mini-button {
+        align-self: center;
+        padding: 0.25rem;
+        border-radius: 50%;
+
+    }
+    .mini-button:hover {
+        background-color: var(--grey-color);
     }
 
     .chat-container {
@@ -128,10 +143,11 @@ async function addMessage()
     .chat-bar {
         display: flex;
         gap: 0.25rem;
-        align-items: center;
+        justify-content: space-between;
 
         box-sizing: border-box;
-
+        border: 1px solid salmon;
+        box-sizing: border-box;
     }
 
     .chat-member-count {

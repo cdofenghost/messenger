@@ -86,8 +86,8 @@
 </script>
 
 <style scoped>
-    @import url(../css/fonts.css);
-    @import url(../css/colors.css);
+	@import url(../css/colors.css);
+	@import url(../css/fonts.css);
 
 	.heading {
 		text-align: center;
@@ -102,7 +102,7 @@
 	}
 
 	.middle-container {
-		border: 4px solid var(--accent-color);
+		border: 4px solid var(--accent-color-light);
 		border-radius: 1rem;
 		box-sizing: content-box;
 		align-content: center;
@@ -141,8 +141,8 @@
 		width: 100%;
 
 		border-radius: 0.25rem;
-		background-color: var(--accent-color);
-		color: var(--primary-color);
+		background-color: var(--primary-color);
+		color: var(--white-color);
 
 		transition:
 			background-color 0.1s ease-out,
@@ -150,28 +150,27 @@
 	}
 
 	.button-1:hover {
-		background-color: var(--primary-color);
-		color: var(--accent-color);
+		background-color: var(--accent-color-deep);
 
 		transition:
 			background-color 0.1s ease-in,
 			color 0.1s ease-in;
 	}
 
-	.input-text, .error, .approve {
+	.input-text {
 		outline: none;
 		border: solid 0.125rem transparent;
 		box-sizing: border-box;
 
 		font-size: 0.8rem;
 
-		background-color: var(--deep-color);
+		background-color: var(--grey-color);
 		border-radius: 0.5rem;
 		padding: 0.25rem 1rem;
 		height: 2rem;
 		
-		color: var(--primary-color);
-		caret-color: var(--accent-color);
+		color: var(--primary-color-contrast);
+		caret-color: var(--accent-color-deep);
 
 		width: 100%;
 
@@ -184,7 +183,7 @@
 
 	.error, .approve {
 		color: white;
-		background-color: #9A3F3F;
+		background-color: var(--error-color);
 		height: fit-content;
 
 		border-radius: .25rem;
@@ -216,11 +215,12 @@
 	}
 
 	.approve {
-		background-color: #59AC77;
+		background-color: var(--success-color);
 	}
 
+
 	.input-text:hover {
-		border: solid 0.125rem var(--accent-color);
+		border: solid 0.125rem var(--primary-color);
 		transition: border 0.3s ease-in;
 	}
 </style>

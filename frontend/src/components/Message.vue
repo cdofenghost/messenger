@@ -82,6 +82,7 @@
         width: fit-content;
         max-width: 90%;
         height: fit-content;
+        white-space: pre-wrap;
 
         padding: 0.25rem;
         border-radius: 0.5rem;
@@ -94,6 +95,7 @@
         width: fit-content;
         max-width: 90%;
         height: fit-content;
+        white-space: pre-wrap;  
 
         padding: 0.25rem;
         border-radius: 0.5rem;
