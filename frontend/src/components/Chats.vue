@@ -60,12 +60,9 @@ function setCurrentChat(id) {
         flex-direction: column;
 
         height: fit-content;
+        max-width: 20vw;
 
         gap: 0.25rem;
-        background-color: var(--white-color);
-        border: 2px solid var(--primary-color);  
-              
-        padding: 0.25rem;
-        border-radius: 0.25rem;
+        background-color: var(--grey-color);
     }
 </style>

@@ -2,16 +2,30 @@
     <div class="chat-container" v-if="currentChat">
         <div class="chat-bar">
             <div class="chat-icon">
-                <img src="/src/static/imgs/666175.png"></img>
+                <img v-if="chatIcon !== undefined"   src="/src/static/imgs/666175.png"></img>
+                <div v-else class="icon-text-default nunito-600">{{ getChatDefaultIcon() }}</div>
             </div>
             <div class="detail-info" style="width: 100%; box-sizing: border-box;">
                 <div class="chat-name nunito-600">{{ currentChat.name }} <span class="chat-type">({{currentChat.type}} Chat)</span></div>
                 <div class="chat-member-count nunito-400">{{ members.length }} members</div>
             </div>
-            <div class="mini-button"><font-awesome-icon icon='plus'></font-awesome-icon></div>
+            <div class="mini-button" v-on:click="togglePopup"><font-awesome-icon icon='user-plus'></font-awesome-icon></div>
+            <transition name="popup">
+            <div v-if="isOpen" class="popup-menu">
+                <button @click="selectOption('profile')" class="menu-item">
+                👤 Профиль
+                </button>
+                <button @click="selectOption('settings')" class="menu-item">
+                ⚙️ Настройки
+                </button>
+                <button @click="selectOption('logout')" class="menu-item">
+                🚪 Выйти
+                </button>
+            </div>
+            </transition>
         </div>
         <div class="chat">
-            <Message 
+            <Message
                 v-for="message in messages"
                 :key="message.id"
                 :userSentMessage="message.sentByMe"
@@ -21,9 +35,14 @@
                 :withNewDate="message.withNewDate"
                 :datestamp="message.datestamp">
             </Message>
-            <div class="input-bar">
-                <textarea @keyup.enter="addMessage" class="nunito-400" placeholder="Message" type="text" v-model="inputMessage"></textarea>
-            </div>  
+            <div class="input-bar-handler">
+                <div class="input-bar">
+                    <textarea @keyup.enter="addMessage" class="nunito-400" placeholder="Message" type="text" v-model="inputMessage"></textarea>
+                    <div class="mini-button" v-on:click="addMessage">
+                        <font-awesome-icon class="fa-icon" icon="paper-plane" style="rotate: 45deg; translate: -3px 1px; color: var(--accent-color-deep);"></font-awesome-icon>
+                    </div>
+                </div>  
+            </div>
         </div>
     </div>
     
@@ -48,6 +67,28 @@ var inputMessage = '';
 
 const headers = new Headers();
 headers.append('Content-Type', 'application/json');
+
+function getChatDefaultIcon()
+{
+    const words = currentChat.value.name.split(' ')
+    let result = ""
+    words.forEach(element => {
+        result += element[0].toUpperCase();
+    });
+    return result;
+}
+
+async function revealAddPopup(params) {
+
+}
+
+async function addUser(params) {
+    try {
+
+    } catch (error) {
+
+    }
+}
 
 async function addMessage(event)
 {
@@ -80,7 +121,12 @@ async function addMessage(event)
     export default {
         data() {
             return {
-
+                isOpen: false,
+            }
+        },
+        methods: {
+            togglePopup(params) {
+                this.isOpen = !this.isOpen;
             }
         }
     }
@@ -89,6 +135,53 @@ async function addMessage(event)
 <style scoped>
     @import url(../css/fonts.css);
     @import url(../css/colors.css);
+
+    .icon-text-default {
+        text-align: center;
+        color: var(--white-color);
+    }
+
+    .popup-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .trigger-btn {
+        padding: 10px 20px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .popup {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 5px;
+        z-index: 1000;
+    }
+
+    .popup-content {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        min-width: 150px;
+    }
+
+    .popup-content p {
+        margin: 0;
+        padding: 8px;
+        cursor: pointer;
+    }
+
+    .popup-content p:hover {
+        background: #f5f5f5;
+    }
+
 
     .chat-type {
         color: var(--accent-color-deep); 
@@ -101,36 +194,38 @@ async function addMessage(event)
         padding: 0.25rem;
         border-radius: 50%;
 
+        transition: 0.2s ease-out background-color;
     }
+
     .mini-button:hover {
-        background-color: var(--grey-color);
+        background-color: var(--grey-light-color);
+        transition: 0.1s ease-in background-color;
     }
 
     .chat-container {
         display: flex;
         flex-direction: column;
 
-        background-color: var(--white-color);
-        border: 2px solid var(--primary-color);
-        box-shadow: 0px 0px 16px 2px rgba(0, 0, 0, 35%);
-        border-radius: 0.25rem;
+        background-color: var(--grey-color);
         font-size: 0.75rem;
-
         width: 100%;
 
         gap: 0.25rem;
-        padding: 0.25rem;
+        padding: 0.25rem 0;
         box-sizing: border-box;
     }
 
     .chat-icon {
-        width: 2rem;
-        height: 2rem;
+        min-width: 2rem;
+        min-height: 2rem;
         border-radius: 50%;
         background: linear-gradient(90deg, #7F56D9, #9E77ED);
         overflow: hidden;
 
         box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
     }
     .chat-icon img {
@@ -146,22 +241,21 @@ async function addMessage(event)
         justify-content: space-between;
 
         box-sizing: border-box;
-        border: 1px solid salmon;
-        box-sizing: border-box;
     }
 
     .chat-member-count {
         color: var(--accent-color);
-        font-size: 0.7rem;
+        font-size: 0.6rem;
     }
 
     .chat {
         display: flex;
         flex-direction: column;
+        flex-grow: 1;
         position: relative;
         gap: 0.25rem;
 
-        background: linear-gradient(45deg, var(--grey-color));
+        background: linear-gradient(45deg, var(--black-color));
         color: var(--primary-color);
 
         width: 100%;
@@ -172,21 +266,34 @@ async function addMessage(event)
         overflow-x: hidden;
         overflow-y: scroll;
         
-        scrollbar-color: var(--primary-color) var(--accent-color);
+        scrollbar-color: var(--accent-color-deep) var(--background-color);
         scrollbar-width: thin;
         box-sizing: border-box;
     }
 
+    .input-bar-handler {
+        display: flex; 
+        align-items: end; 
+        justify-content: end;
+
+        position: sticky; 
+        bottom: 0; 
+        height: 100%; 
+    }
+
     .input-bar {
+        display: flex;
+        align-items: center;
+
         position: sticky;
         bottom: 0;
-        box-shadow: 0px 0px 16px 2px rgba(0, 0, 0, 35%);
+        box-shadow: 0px 4px 8px 1px rgba(0, 0, 0, 35%);
 
         height: fit-content;
         max-height: 20vh;
         width: 100%;
 
-        background-color: var(--white-color);
+        background-color: var(--grey-color);
         padding: 0.25rem;
         border-radius: 0.25rem;
 
@@ -201,8 +308,10 @@ async function addMessage(event)
         border: none;
         outline: none;
 
-        background-color: var(--white-color);
+        background-color: var(--grey-color);
         caret-color: var(--primary-color);
+        color: var(--white-color);
+
         resize: none;
         field-sizing: content;
 

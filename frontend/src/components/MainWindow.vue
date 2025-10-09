@@ -33,14 +33,19 @@
 
     .main-frame {
         display: flex;
-        gap: 0.5rem;
         margin: 0 10vw;
+        color: var(--white-color);
+        border: 1px solid var(--black-color);
+        border-radius: 0.25rem;
+        box-sizing: border-box;
+        overflow: hidden;
+        background-color: var(--grey-color);
     }
 
     .left-frame {
         display: flex;
         flex-direction: column;
-        gap: 0.25rem;
+        padding: 0.25rem;
     }
 
 </style>

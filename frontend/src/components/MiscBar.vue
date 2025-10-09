@@ -89,7 +89,7 @@ import CreateChatForm from './CreateChatForm.vue';
 
 		border-radius: 0.25rem;
 		background-color: var(--primary-color) !important;
-		color: var(--white-color);
+		color: var(--background-color);
 
 		transition:
 			background-color 0.1s ease-out,
@@ -123,10 +123,9 @@ import CreateChatForm from './CreateChatForm.vue';
     }
 
     .misc-bar {
-        border: 2px solid var(--primary-color);  
-        border-radius: 0.25rem;
-
         overflow: hidden;
+        border-radius: 0.25rem;
+        margin-bottom: 0.25rem;
     }
 
 	.hidden-content, .user-settings {
@@ -137,7 +136,7 @@ import CreateChatForm from './CreateChatForm.vue';
 		position: relative;
 		z-index: 1000;
 
-        background-color: var(--white-color);
+        background-color: var(--background-color);
         box-sizing: border-box;
 
 		transition: all 0.3s ease;
@@ -170,6 +169,8 @@ import CreateChatForm from './CreateChatForm.vue';
         box-sizing: border-box;
 
         background-color: var(--grey-color);
+        color: var(--white-color);
+
     }
 
     .hidden-content .label-input {
@@ -197,14 +198,14 @@ import CreateChatForm from './CreateChatForm.vue';
         box-shadow: 0px 4px 16px 2px rgba(0, 0, 0, 10%);
 
         gap: 0.25rem;
-        background-color: var(--white-color);
+        background-color: var(--grey-color);
         
         padding: 0.25rem;
         transition: 0.3s ease-out background-color;
     }
 
     .bar-frame:hover {
-        background-color: var(--grey-color);
+        background-color: var(--grey-light-color);
 
         transition: 0.1s ease-in background-color;
     }

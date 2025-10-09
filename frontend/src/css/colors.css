@@ -1,13 +1,13 @@
 @property --background-color {
     syntax: "<color>";
     inherits: false;
-    initial-value: #FDFDFD;
+    initial-value: #181818;
 }
 
 @property --primary-color {
     syntax: "<color>";
     inherits: false;
-    initial-value: #9E77ED;
+    initial-value: #8774E1;
 }
 
 @property --white-color {
@@ -19,7 +19,13 @@
 @property --grey-color {
     syntax: "<color>";
     inherits: false;
-    initial-value: #E9EAEB;
+    initial-value: #212121;
+}
+
+@property --grey-light-color {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #333333;
 }
 
 @property --error-color {
@@ -43,7 +49,7 @@
 @property --black-color {
     syntax: "<color>";
     inherits: false;
-    initial-value: #0A0D12;
+    initial-value: #161616;
 }
 
 @property --accent-color-deep {

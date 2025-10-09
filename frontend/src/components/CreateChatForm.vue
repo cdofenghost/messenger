@@ -31,7 +31,7 @@
         data() {
             return {
                 chatName: "",
-                chatType: "",
+                chatType: "Public",
                 invitedUserEmail: "",
             }
         },
@@ -43,12 +43,23 @@
                 console.log(this.chatName);
                 console.log(this.invitedUserEmail);
 
-                const invitedUserResponse = await fetch(`/api/users?email=${this.invitedUserEmail}`);
-                const response = await fetch(`/api/users/me/chats?invited_user_id=${new Number((await invitedUserResponse.json()).id)}&name=${this.chatName}&type=${this.chatType}`, {
-                    method: "POST"
-                });
+				if (this.invitedUserEmail !== "") 
+				{
+					const invitedUserResponse = await fetch(`/api/users?email=${this.invitedUserEmail}`);
+					const response = await fetch(`/api/users/me/chats?invited_user_id=${new Number((await invitedUserResponse.json()).id)}&name=${this.chatName}&type=${this.chatType}`, {
+						method: "POST"
+					});
 
-                console.log(await response.json());
+					console.log(await response.json());
+				}
+				else 
+				{
+					const response = await fetch(`/api/users/me/chats?invited_user_id=${null}&name=${this.chatName}&type=${this.chatType}`, {
+						method: "POST"
+					});
+
+					console.log(await response.json());
+				}
             },
         }
     }
@@ -99,7 +110,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.1);
+        background-color: rgba(255, 255, 255, 10%);
         display: none;
         z-index: 9999;
         justify-items: center;

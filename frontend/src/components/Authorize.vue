@@ -90,7 +90,7 @@
 	}
 
 	.middle-container {
-		border: 4px solid var(--accent-color-light);
+		border: 4px solid var(--accent-color-deep);
 		border-radius: 1rem;
 		box-sizing: content-box;
 		align-content: center;
@@ -129,7 +129,7 @@
 		width: 100%;
 
 		border-radius: 0.25rem;
-		background-color: var(--primary-color);
+		background-color: var(--accent-color-deep);
 		color: var(--white-color);
 
 		transition:
@@ -138,7 +138,7 @@
 	}
 
 	.button-1:hover {
-		background-color: var(--accent-color-deep);
+		background-color: var(--primary-color);
 
 		transition:
 			background-color 0.1s ease-in,
@@ -157,7 +157,7 @@
 		padding: 0.25rem 1rem;
 		height: 2rem;
 		
-		color: var(--primary-color-contrast);
+		color: var(--white-color);
 		caret-color: var(--accent-color-deep);
 
 		width: 100%;

@@ -6,19 +6,19 @@
         <div class="message-sender nunito-800">
             <b>{{ senderName }}</b>
         </div>
-        <div class="message-content">
+        <div class="message-content nunito-300">
             {{ content }}
         </div>
-        <div class="timestamp">{{ timestamp }}</div>  
+        <div class="timestamp nunito-100">{{ timestamp }}</div>  
     </div>
-    <div ref="targetComponent" v-else="userSentMessage" class="your-message-container">
+    <div ref="targetComponent" v-else class="your-message-container">
         <div class="message-sender nunito-800">
             <b>{{ senderName }}</b>
         </div>
-        <div class="message-content">
+        <div class="message-content nunito-300">
             {{ content }}
         </div>
-        <div class="timestamp">{{ timestamp }}</div>
+        <div class="timestamp nunito-100">{{ timestamp }}</div>
     </div>
 </template>
 
@@ -60,13 +60,17 @@
     @import url(../css/fonts.css);
     @import url(../css/colors.css);
 
+    .message-content {
+        font-size: 0.7rem;
+    }
+
     .date-blob {
         position: sticky;
         text-align: center;
         align-self: center;
 
-        background-color: var(--white-color);
-        color: var(--black-color);
+        background-color: var(--grey-color);
+        color: var(--white-color);
 
         padding: 0.25rem;
         border-radius: 0.25rem;
@@ -75,7 +79,7 @@
     }
 
     .your-message-container {
-        background-color: var(--primary-color);
+        background-color: var(--accent-color-deep);
         color: var(--white-color);
         align-self: flex-end;
 
@@ -89,8 +93,8 @@
     }
 
     .other-message-container {
-        background-color: var(--white-color);
-        color: black;
+        background-color: var(--grey-color);
+        color: var(--white-color);
 
         width: fit-content;
         max-width: 90%;
@@ -108,8 +112,8 @@
 
     .other-message-container .message-sender {
         font-size: 0.6rem;
-        color: var(--black-color);
     }
+
     .your-message-container .message-sender {
         font-size: 0.6rem;
         color: var(--white-color);
@@ -122,10 +126,10 @@
     }
 
     .your-message-container .timestamp {
-        color: var(--unnecessary-color-white);
+        color: var(--white-color);
     }
 
     .other-message-container .timestamp {
-        color: var(--unnecessary-color-grey);
+        color: var(--white-color);
     }
 </style>
