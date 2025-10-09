@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, Query
 from typing import Annotated
 
 from sqlalchemy.orm import Session
@@ -9,7 +9,7 @@ from ..exceptions import AppError
 from ..users import (
     UserRepository, UserService,
     UserCreateSchema, UserSchema, UserCredentialSchema,
-    UserChangeDataSchema,
+    UserChangeDataSchema, UserPublicSchema,
 )
 
 router = APIRouter(prefix="/users")
@@ -81,15 +81,24 @@ async def authorize(credentials: UserCredentialSchema,
     
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
-        
-@router.get('/', tags=["User"], response_model=UserSchema, status_code=200)
-async def get_user_by_email(email: str,
-                            service: ServiceDependency):
+    
+@router.get('/search', tags=["User"], response_model=UserSchema | UserPublicSchema, status_code=200)
+async def search_user(service: ServiceDependency,
+                      query: str = Query(..., min_length=1, description="Find user by e-mail, tag, or username")):
     try:
-        return service.get_user_by_email(email=email)
+        found_user: UserSchema | UserPublicSchema = None
 
+        if "@" in query and "." in query:
+            found_user = service.get_user_by_email(email=query)
+        elif query.startswith("@"):
+            found_user = service.get_user_by_tag(tag=query)
+        # else:
+        #     found_user = service.get
+
+        return found_user
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
+
     
 @router.get('/{id}', tags=["User"], response_model=UserSchema, status_code=200)
 async def get_user(id: int,

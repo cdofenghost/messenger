@@ -45,8 +45,9 @@
 
 				if (this.invitedUserEmail !== "") 
 				{
-					const invitedUserResponse = await fetch(`/api/users?email=${this.invitedUserEmail}`);
-					const response = await fetch(`/api/users/me/chats?invited_user_id=${new Number((await invitedUserResponse.json()).id)}&name=${this.chatName}&type=${this.chatType}`, {
+					const invitedUserResponse = await fetch(`/api/users?query=${this.invitedUserEmail}`);
+					const invitedUserId = new Number((await invitedUserResponse.json()).id);
+					const response = await fetch(`/api/users/me/chats?invited_user_id=${invitedUserId}&name=${this.chatName}&type=${this.chatType}`, {
 						method: "POST"
 					});
 

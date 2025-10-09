@@ -67,7 +67,8 @@ class MemberRepository:
             raise NoResultFound()
         
         return [UserPublicSchema(id=user.id, name=user.name, email=user.email,
-                                 bio=user.bio, status=user.status, hashed_password=user.hashed_password) 
+                                 bio=user.bio, status=user.status, hashed_password=user.hashed_password,
+                                 tag=user.tag) 
                                  for user in users]
     
     def update_member(self, user_id: int, chat_id: int, update_schema: MemberUpdateSchema) -> MemberSchema:

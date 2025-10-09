@@ -5,6 +5,7 @@ from ..models.user import User
 class UserSchema(BaseModel):
     id: int = Field()
     name: str = Field(pattern="[А-Яа-яA-Za-z0-9]+", min_length=2, max_length=50)
+    tag: str = Field()
     email: EmailStr = Field()
     bio: str = Field(max_length=250)
     status: str = Field()
@@ -13,6 +14,7 @@ class UserSchema(BaseModel):
 class UserPublicSchema(BaseModel):
     id: int = Field()
     name: str = Field(pattern="[А-Яа-яA-Za-z0-9]+", min_length=2, max_length=50)
+    tag: str = Field()
     bio: str = Field(max_length=250)
     status: str = Field()
 

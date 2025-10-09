@@ -4,9 +4,13 @@ from email_validator import validate_email, EmailNotValidError, EmailUndeliverab
 
 from passlib.hash import bcrypt
 
-from ..utils.utils import generate_name
+from ..utils.utils import generate_name, generate_user_tag
 from ..models.user import User
-from ..schemas.user import UserSchema, UserCreateSchema, UserCredentialSchema, UserChangeDataSchema
+from ..schemas.user import ( 
+    UserSchema, UserCreateSchema, 
+    UserCredentialSchema, UserChangeDataSchema,
+    UserPublicSchema
+)
 from .exceptions import (
     InvalidCredentialsError, 
     InvalidEmailError,
@@ -20,8 +24,12 @@ class UserRepository:
 
     def __to_user(self, credentials: UserCreateSchema) -> User:
         hashed_password = bcrypt.hash(credentials.password)
+        user_tag = None
+        while user_tag is None or self.__is_user_tag_taken(tag=user_tag):
+            user_tag = generate_user_tag()
         return User(
             name=generate_name(),
+            tag=user_tag,
             email=credentials.email,
             hashed_password=hashed_password,
             bio="",
@@ -31,8 +39,12 @@ class UserRepository:
     def __to_user_schema(self, user: User) -> UserSchema:
         return UserSchema(
             id=user.id, name=user.name, email=user.email,
-            bio=user.bio, status=user.status, hashed_password=user.hashed_password
+            bio=user.bio, status=user.status, hashed_password=user.hashed_password,
+            tag=user.tag
         )
+    
+    def __is_user_tag_taken(self, tag: str) -> bool:
+        return self.db.query(User).filter(User.tag == tag).first() != None
 
     def add_user(self, credentials: UserCreateSchema) -> UserSchema:
         user = self.__to_user(credentials)
@@ -57,6 +69,14 @@ class UserRepository:
             raise NoResultFound()
         
         return self.__to_user_schema(user)
+    
+    def find_user_by_tag(self, tag: str) -> UserSchema:
+        user = self.db.query(User).filter(User.tag == tag).first()
+
+        if user is None:
+            raise NoResultFound()
+        
+        return self.__to_user_schema(user=user)
     
     def get_all_users(self) -> list[UserSchema]:
         users = self.db.query(User).all()
@@ -94,6 +114,10 @@ class UserService:
     def __init__(self, repository: UserRepository):
         self.repository = repository
 
+    def __to_public_schema(self, user: UserSchema) -> UserPublicSchema:
+        return UserPublicSchema(id=user.id, name=user.name, tag=user.tag,
+                                bio=user.bio, status=user.status)
+
     def register_user(self, credentials: UserCreateSchema) -> UserSchema:
         try:
             self.get_user_by_email(credentials.email)
@@ -125,6 +149,14 @@ class UserService:
         
         except NoResultFound:
             raise UserNotFoundError()
+        
+    def get_user_by_tag(self, tag: str) -> UserPublicSchema:
+        try:
+            found_user: UserSchema = self.repository.find_user_by_tag(tag=tag)
+            return self.__to_public_schema(user=found_user)
+        
+        except NoResultFound:
+            raise UserNotFoundError("No user found with such tag.")
         
     def get_all_users(self) -> list[UserSchema]:
         return self.repository.get_all_users()
