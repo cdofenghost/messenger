@@ -78,6 +78,15 @@ class UserRepository:
         
         return self.__to_user_schema(user=user)
     
+    def find_users_with_name(self, name: str) -> list[UserSchema]:
+        users = self.db.query(User).filter(User.name.like(f"%{name}%"))
+
+        if users is None or users.count() == 0:
+            raise NoResultFound()
+        
+        return [self.__to_user_schema(user=user)
+                for user in users]
+    
     def get_all_users(self) -> list[UserSchema]:
         users = self.db.query(User).all()
         return [self.__to_user_schema(user) for user in users]
@@ -157,6 +166,15 @@ class UserService:
         
         except NoResultFound:
             raise UserNotFoundError("No user found with such tag.")
+        
+    def get_users_with_name(self, name: str) -> list[UserPublicSchema]:
+        try:
+            found_users: list[UserSchema] = self.repository.find_users_with_name(name=name)
+            return [self.__to_public_schema(user=user)
+                    for user in found_users]
+
+        except NoResultFound:
+            raise UserNotFoundError("No user found with such nickname.")
         
     def get_all_users(self) -> list[UserSchema]:
         return self.repository.get_all_users()

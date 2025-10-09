@@ -82,7 +82,7 @@ async def authorize(credentials: UserCredentialSchema,
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
     
-@router.get('/search', tags=["User"], response_model=UserSchema | UserPublicSchema, status_code=200)
+@router.get('/search', tags=["User"], response_model=UserSchema | UserPublicSchema | list[UserPublicSchema], status_code=200)
 async def search_user(service: ServiceDependency,
                       query: str = Query(..., min_length=1, description="Find user by e-mail, tag, or username")):
     try:
@@ -92,10 +92,10 @@ async def search_user(service: ServiceDependency,
             found_user = service.get_user_by_email(email=query)
         elif query.startswith("@"):
             found_user = service.get_user_by_tag(tag=query)
-        # else:
-        #     found_user = service.get
-
+        else:
+            found_user = service.get_users_with_name(name=query)
         return found_user
+    
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
 
