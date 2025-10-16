@@ -119,14 +119,14 @@ async def get_user_chats(user: UserDependency,
         raise HTTPException(status_code=e.error_code, detail=e.message)
 
 @router.post('/users/me/chats', response_model=ChatSchema, status_code=201, tags=["Current User"])
-async def create_chat(invited_user_id: int,
-                      user: UserDependency, 
+async def create_chat(user: UserDependency, 
                       service: ChatServiceDependency,
                       chat_data: ChatCreateSchema = Depends()) -> ChatSchema:
     chat = service.add_chat(chat_data)
 
     service.add_member_to_chat(MemberCreateSchema(user_id=user.id, chat_id=chat.id, role=ADMIN))
-    service.add_member_to_chat(MemberCreateSchema(user_id=invited_user_id, chat_id=chat.id, role=PARTICIPANT))
+    for uid in chat_data.invited_user_ids:
+        service.add_member_to_chat(MemberCreateSchema(user_id=uid, chat_id=chat.id, role=PARTICIPANT))
 
     return chat
 

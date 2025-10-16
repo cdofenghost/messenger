@@ -17,7 +17,7 @@
                         🔒 Private
                     </option>
                 </select>
-				<input v-on:input="debouncedSearch" class="input-text" type="email" placeholder="add member..." v-model="userSearch"></input>
+				<input v-on:input="debouncedSearch" class="input-text" placeholder="add member..." v-model="userSearch"></input>
 				<div class="added-users">
 					<AddedUser
 						v-for="user in invitedUsers"
@@ -47,38 +47,6 @@
     </div>
 </template>
 
-<script>
-    export default {
-        methods: {
-            async createNewChat(event) {
-                event.preventDefault();
-                // console.log(this.chatType);
-                // console.log(this.chatName);
-                // console.log(this.userSearch);
-
-				if (this.userSearch !== "") 
-				{
-					const invitedUserResponse = await fetch(`/api/users?query=${this.userSearch}`);
-					const invitedUserId = new Number((await invitedUserResponse.json()).id);
-					const response = await fetch(`/api/users/me/chats?invited_user_id=${invitedUserId}&name=${this.chatName}&type=${this.chatType}`, {
-						method: "POST"
-					});
-
-					// console.log(await response.json());
-				}
-				else 
-				{
-					const response = await fetch(`/api/users/me/chats?invited_user_id=${null}&name=${this.chatName}&type=${this.chatType}`, {
-						method: "POST"
-					});
-
-					console.log(await response.json());
-				}
-            },
-        }
-    }
-</script>
-
 <script setup>
 	import { computed, ref } from 'vue';
 	import UserSearchResult from './UserSearchResult.vue';
@@ -90,20 +58,42 @@
 	const chatType = ref("Public");
 	const userSearch = ref("");
 	const invitedUsers = ref([]);
+	const invitedUserIds = ref([]);
 	const usersInSearch = ref(null);
 
 	let timerReference = null;
 
+	async function createNewChat(event) {
+		event.preventDefault();
+		// console.log(this.chatType);
+		// console.log(this.chatName);
+		// console.log(this.userSearch);
+		const response = await fetch(`/api/users/me/chats?name=${chatName.value}&type=${chatType.value}`, {
+			headers: {
+				"Content-Type": "application/json",	
+			},
+			method: "POST",
+			body: JSON.stringify(invitedUserIds.value),
+		});
+
+		console.log(await response.json());
+	}
+
 	function handleDelete(userToDelete)
 	{
 		invitedUsers.value = invitedUsers.value.filter(user => user != userToDelete)
+		invitedUserIds.value = [];
+		invitedUsers.value.forEach(user => {
+			invitedUserIds.value.push(user.id);
+		});
 		console.log(userToDelete);
 	}
 
 	function handleInvitationUpdate(newValue)
 	{
 		invitedUsers.value.push(newValue);
-		console.log(invitedUsers.value);
+		invitedUserIds.value.push(newValue.id);
+		console.log(invitedUserIds.value);
 	}
 
 	async function debouncedSearch(params) 

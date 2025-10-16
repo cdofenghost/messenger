@@ -19,8 +19,6 @@
 
 <script>
 	import { BASE_URL } from '@/other';
-	import ApprovePopup from './ApprovePopup.vue';
-	import ErrorPopup from './ErrorPopup.vue';
 
 	const headers = new Headers();
 	headers.append('Content-Type', 'application/json');
@@ -36,8 +34,9 @@
 		methods: {
 			async validateForm()
 			{
-				const errorPopup = document.getElementById('error-msg');
 				event.preventDefault();
+				const errorPopup = document.getElementById('error-msg');
+				console.log(errorPopup);
 
 				if(this.password !== this.confirmPassword){
 					errorPopup.textContent = "Password doesn't match repeated password.";
@@ -86,6 +85,8 @@
 	}
 </script>
 <script setup>
+	import ApprovePopup from './ApprovePopup.vue';
+	import ErrorPopup from './ErrorPopup.vue';
 </script>
 
 <style scoped>
@@ -120,6 +121,7 @@
 
 		align-items: center;
 		justify-self: center;
+		color: var(--white-color);
 
 		margin-top: 1rem;
 
