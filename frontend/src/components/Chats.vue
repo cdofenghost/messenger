@@ -34,7 +34,7 @@ async function load_chats(params) {
     try {
         const response = await fetch("/api/users/me/chats");
         const chatDB = await response.json();
-        console.log(chatDB);
+        // console.log(chatDB);
         chats.value = chatDB;
         chatStore.chats = chatDB;
         

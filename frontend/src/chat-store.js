@@ -33,7 +33,7 @@ export const useChatStore = defineStore('chat', () => {
         try {
             const response = await fetch(`/api/chats/${chatId}/messages`);
             messages.value = (await response.json());
-            console.log(messages);
+            // console.log(messages);
 
             var lastDate = new Date();
             lastDate.setTime(0);
@@ -56,7 +56,7 @@ export const useChatStore = defineStore('chat', () => {
                     lastDate.setMilliseconds(0);
                 }
 
-                else console.log(diffDays);
+                // else console.log(diffDays);
                 message.sentByMe = useUserStore().userData.id == message.sender.id;
             });
         } catch (error) {
@@ -70,7 +70,7 @@ export const useChatStore = defineStore('chat', () => {
             const response = await fetch(`/api/chats/${chatId}/members`);
             members.value = await response.json();
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
 

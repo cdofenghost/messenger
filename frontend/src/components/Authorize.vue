@@ -4,8 +4,8 @@
 		<div class="desc nunito-300">private and safe place to chat with your friends</div>
 		<div class="input-container nunito-300">
 			<form id="authorization-form" v-on:submit="authorizeUser">
-				<label class="error nunito-400" id="error-msg"></label>
-				<label class="approve nunito-400" id="approve-msg"></label>
+				<ApprovePopup></ApprovePopup>
+				<ErrorPopup></ErrorPopup>
 				<input class="input-text" type="email" placeholder="your e-mail" v-model="email" required></input>
 				<input class="input-text" type="password" placeholder="your password" minlength="8" v-model="password" required></input>
 				<div class="button-container">
@@ -19,8 +19,14 @@
 	</div>
 </template>
 
+<script setup>
+	import ErrorPopup from './ErrorPopup.vue';
+	import ApprovePopup from './ApprovePopup.vue';
+</script>
+
 <script>
 	import { BASE_URL } from '@/other';
+
 	const headers = new Headers();
 	headers.append('Content-Type', 'application/json');
 	headers.append('Access-Control-Allow-Origin', `${BASE_URL}`)
@@ -49,7 +55,7 @@
 						}),
 					});
 
-					console.log('Response headers:', response.headers);
+					// console.log('Response headers:', response.headers);
 					if (!response.ok) throw new Error(`${(await response.json()).detail}`);
 
 					else {

@@ -6,8 +6,8 @@
                     <div class="form-heading nunito-600" style="width: 100%;">Create Chat</div>
                     <div class="mini-button" v-on:click="flipContent('new-chat')"><font-awesome-icon icon="arrow-right" style="display: block; width: 0.75rem; height: 0.75rem;"></font-awesome-icon></div>
                 </div>
-				<label class="error nunito-400" id="error-msg"></label>
-				<label class="approve nunito-400" id="approve-msg"></label>
+				<ErrorPopup></ErrorPopup>
+				<ApprovePopup></ApprovePopup>
 				<input class="input-text" type="text" placeholder="your chat name" required v-model="chatName"></input>
 				<select class="input-text" id="chat-select" v-model="chatType">
                     <option value="Public">
@@ -17,7 +17,28 @@
                         🔒 Private
                     </option>
                 </select>
-				<input class="input-text" type="email" placeholder="add member..." v-model="invitedUserEmail"></input>
+				<input v-on:input="debouncedSearch" class="input-text" type="email" placeholder="add member..." v-model="userSearch"></input>
+				<div class="added-users">
+					<AddedUser
+						v-for="user in invitedUsers"
+						@delete="handleDelete"
+						:userReference="user"
+						:userName="user.name"
+						:userIcon=null>
+					</AddedUser>
+				</div>
+				<div class="search-results">
+					<UserSearchResult 
+						v-for="user in usersInSearch"
+						@update:invitedUsers="handleInvitationUpdate"
+						:userReference="user"
+						:invitedUsers="invitedUsers"
+						:userId="user.id"
+						:userName="user.name"
+						:userTag="user.tag"
+						:userIcon="null">
+					</UserSearchResult>
+				</div>
 				<div class="button-container">
 					<input type="submit" value="Create New Chat" class="button-1 nunito-600"></input>
 				</div>
@@ -28,30 +49,22 @@
 
 <script>
     export default {
-        data() {
-            return {
-                chatName: "",
-                chatType: "Public",
-                invitedUserEmail: "",
-            }
-        },
-
         methods: {
             async createNewChat(event) {
                 event.preventDefault();
-                console.log(this.chatType);
-                console.log(this.chatName);
-                console.log(this.invitedUserEmail);
+                // console.log(this.chatType);
+                // console.log(this.chatName);
+                // console.log(this.userSearch);
 
-				if (this.invitedUserEmail !== "") 
+				if (this.userSearch !== "") 
 				{
-					const invitedUserResponse = await fetch(`/api/users?query=${this.invitedUserEmail}`);
+					const invitedUserResponse = await fetch(`/api/users?query=${this.userSearch}`);
 					const invitedUserId = new Number((await invitedUserResponse.json()).id);
 					const response = await fetch(`/api/users/me/chats?invited_user_id=${invitedUserId}&name=${this.chatName}&type=${this.chatType}`, {
 						method: "POST"
 					});
 
-					console.log(await response.json());
+					// console.log(await response.json());
 				}
 				else 
 				{
@@ -66,8 +79,65 @@
     }
 </script>
 
-
 <script setup>
+	import { computed, ref } from 'vue';
+	import UserSearchResult from './UserSearchResult.vue';
+	import AddedUser from './AddedUser.vue';
+	import ErrorPopup from './ErrorPopup.vue';
+	import ApprovePopup from './ApprovePopup.vue';
+
+	const chatName = ref("");
+	const chatType = ref("Public");
+	const userSearch = ref("");
+	const invitedUsers = ref([]);
+	const usersInSearch = ref(null);
+
+	let timerReference = null;
+
+	function handleDelete(userToDelete)
+	{
+		invitedUsers.value = invitedUsers.value.filter(user => user != userToDelete)
+		console.log(userToDelete);
+	}
+
+	function handleInvitationUpdate(newValue)
+	{
+		invitedUsers.value.push(newValue);
+		console.log(invitedUsers.value);
+	}
+
+	async function debouncedSearch(params) 
+	{
+		if (timerReference == null)
+		{
+			timerReference = setTimeout(async () => searchForUser(), 1000);
+		}
+		else
+		{
+			timerReference = clearTimeout(timerReference);
+			timerReference = setTimeout(async () => searchForUser(), 1000);
+		}
+	}
+
+	async function searchForUser()
+	{
+		try {
+			const invitedUserResponse = await fetch(`/api/users/search?query=${userSearch.value}`);
+			if (invitedUserResponse.ok)
+			{
+				usersInSearch.value = await invitedUserResponse.json();
+				console.log(usersInSearch.value);
+			}
+			else 
+			{
+				usersInSearch.value = [];
+			}
+
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
     function flipContent(switchType)
     {
         const hiddenContent = document.getElementById(switchType); 
@@ -79,11 +149,29 @@
 <style scoped>
     @import url("../css/fonts.css");
     @import url("../css/colors.css");
-    .header {
 
+	.added-users {
+        display: flex;
+		justify-content: start;
+		width: 100%;
+		gap: 0.25rem;
+	}
+
+	.search-results {
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+		gap: 0.25rem;
+
+		padding-left: 1rem;
+		box-sizing: border-box;
+		width: 100%;
+	}
+    .header {
         display: flex; 
         justify-items: space-between; 
         align-items: center;
+
         width: 100%; 
         padding: 0.5rem; 
         box-sizing: border-box;

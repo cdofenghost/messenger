@@ -82,18 +82,18 @@ async def authorize(credentials: UserCredentialSchema,
     except AppError as e:
         raise HTTPException(status_code=e.error_code, detail=e.message)
     
-@router.get('/search', tags=["User"], response_model=UserSchema | UserPublicSchema | list[UserPublicSchema], status_code=200)
+@router.get('/search', tags=["User"], response_model=list[UserSchema] | list[UserPublicSchema], status_code=200)
 async def search_user(service: ServiceDependency,
-                      query: str = Query(..., min_length=1, description="Find user by e-mail, tag, or username")):
+                      query: str = Query(..., min_length=1, description="Find user by e-mail, tag, or username. Returns a list of users.")):
     try:
         found_user: UserSchema | UserPublicSchema = None
 
         if "@" in query and "." in query:
-            found_user = service.get_user_by_email(email=query)
+            found_user: UserSchema = [service.get_user_by_email(email=query)]
         elif query.startswith("@"):
-            found_user = service.get_user_by_tag(tag=query)
+            found_user: UserPublicSchema = [service.get_user_by_tag(tag=query)]
         else:
-            found_user = service.get_users_with_name(name=query)
+            found_user: list[UserPublicSchema] = service.get_users_with_name(name=query)
         return found_user
     
     except AppError as e:

@@ -8,7 +8,7 @@ export const useUserStore = defineStore('user', () => {
         try {
             const response = await fetch(`/api/users/me`, {credentials: 'include'});
             userData.value = await response.json();
-            console.log(userData.value);
+            // console.log(userData.value);
         } catch (error) {
             console.error(error);
         }

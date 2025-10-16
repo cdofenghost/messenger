@@ -61,7 +61,7 @@
                 const response = await fetch(`/api/users/me?name=${this.newUserName}&email=${this.newEmail}&bio=${this.newBio}`, {
                     method: "PUT",
                 })
-                console.log(await response.json());
+                // console.log(await response.json());
             }
         }
     }

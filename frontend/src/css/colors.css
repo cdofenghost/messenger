@@ -19,7 +19,7 @@
 @property --grey-color {
     syntax: "<color>";
     inherits: false;
-    initial-value: #212121;
+    initial-value: #2c2c2c;
 }
 
 @property --grey-light-color {

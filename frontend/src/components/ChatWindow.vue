@@ -92,7 +92,6 @@ async function addUser(params) {
 
 async function addMessage(event)
 {
-    console.log(inputMessage);  
     if (inputMessage.trim().length > 0 && !event.shiftKey)
     {
         try {
@@ -266,7 +265,7 @@ async function addMessage(event)
         overflow-x: hidden;
         overflow-y: scroll;
         
-        scrollbar-color: var(--accent-color-deep) var(--background-color);
+        scrollbar-color: var(--accent-color-deep) var(--grey-color);
         scrollbar-width: thin;
         box-sizing: border-box;
     }

@@ -4,8 +4,8 @@
 		<div class="desc nunito-300">private and safe place to chat with your friends</div>
 		<div class="input-container nunito-200">
 			<form id="registration-form" v-on:submit="validateForm">
-				<label class="error nunito-400" id="error-msg"></label>
-				<label class="approve nunito-400" id="approve-msg"></label>
+				<ApprovePopup></ApprovePopup>
+				<ErrorPopup></ErrorPopup>
 				<input class="input-text" type="email" placeholder="your e-mail" v-model="email" required></input>
 				<input class="input-text" type="password" placeholder="your password" minlength="8" v-model="password" required></input>
 				<input class="input-text" type="password" placeholder="repeat your password" minlength="8" v-model="confirmPassword" required></input>
@@ -19,6 +19,9 @@
 
 <script>
 	import { BASE_URL } from '@/other';
+	import ApprovePopup from './ApprovePopup.vue';
+	import ErrorPopup from './ErrorPopup.vue';
+
 	const headers = new Headers();
 	headers.append('Content-Type', 'application/json');
 
@@ -180,44 +183,6 @@
 		transition:
 			border 0.1s ease-out;
 	}
-
-	.error, .approve {
-		color: white;
-		background-color: var(--error-color);
-		height: fit-content;
-
-		border-radius: .25rem;
-		font-style: italic;
-		font-size: medium;
-
-		opacity: 0;
-		display: none;
-
-		transform: translateY(-10px), scale(0);
-		padding: 0.5em 1em;
-		position: relative;
-		z-index: 1000;
-
-		transition: all 0.3s ease;
-		transition-property: overlay display opacity transform;
-		transition-duration: 0.3s;
-		transition-behavior: allow-discrete;
-	}
-
-	.error.show, .approve.show {
-		display: block;
-
-		opacity: 1;
-		transform: translateY(0), scale(1);
-		@starting-style {
-			opacity: 0;
-		}
-	}
-
-	.approve {
-		background-color: var(--success-color);
-	}
-
 
 	.input-text:hover {
 		border: solid 0.125rem var(--primary-color);
