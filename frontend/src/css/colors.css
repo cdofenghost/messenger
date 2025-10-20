@@ -25,7 +25,7 @@
 @property --grey-light-color {
     syntax: "<color>";
     inherits: false;
-    initial-value: #333333;
+    initial-value: #424242;
 }
 
 @property --error-color {

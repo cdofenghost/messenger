@@ -55,7 +55,7 @@
         methods: {
             getChatDefaultIcon()
             {
-                const words = this.chatName.split(' ')
+                const words = this.chatName.trim().split(' ')
                 let result = ""
                 words.forEach(element => {
                     result += element[0].toUpperCase();

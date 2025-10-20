@@ -7,7 +7,7 @@
             <div class="user-name nunito-400">{{ userName }}</div>
         </div>
         <div id="switch-content" class="hidden-content">
-            <div class="switch-button nunito-200" v-on:click="() => flipContent('switch-us')"><font-awesome-icon icon='user'></font-awesome-icon> User Settings</div>
+            <SwitchButton :text="'User Profile'" :icon="'user'" v-on:click="() => flipContent('switch-us')"></SwitchButton>
             <div id="switch-us" class="user-settings">
                 <form v-on:submit="updateUserData">
                     <div class="label-input nunito-400">
@@ -25,7 +25,8 @@
                     <input class="button" type="submit" value="Change User Data"></input>
                 </form>
             </div>
-            <div class="switch-button nunito-200" v-on:click="() => flipContent('new-chat')"><font-awesome-icon icon='message'></font-awesome-icon> Create New Chat</div>
+            
+            <SwitchButton :text="'Create New Chat'" :icon="'message'" v-on:click="() => flipContent('new-chat')"></SwitchButton>
         </div> 
     </div>
     <CreateChatForm></CreateChatForm>
@@ -67,7 +68,8 @@
     }
 </script>
 <script setup>
-import CreateChatForm from './CreateChatForm.vue';
+    import CreateChatForm from './CreateChatForm.vue';
+    import SwitchButton from './SwitchButton.vue';
 
     function flipContent(switchType)
     {

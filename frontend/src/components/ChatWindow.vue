@@ -9,39 +9,40 @@
                 <div class="chat-name nunito-600">{{ currentChat.name }} <span class="chat-type">({{currentChat.type}} Chat)</span></div>
                 <div class="chat-member-count nunito-400">{{ members.length }} members</div>
             </div>
-            <div class="mini-button" v-on:click="togglePopup"><font-awesome-icon icon='user-plus'></font-awesome-icon></div>
-            <transition name="popup">
-            <div v-if="isOpen" class="popup-menu">
-                <button @click="selectOption('profile')" class="menu-item">
-                👤 Профиль
-                </button>
-                <button @click="selectOption('settings')" class="menu-item">
-                ⚙️ Настройки
-                </button>
-                <button @click="selectOption('logout')" class="menu-item">
-                🚪 Выйти
-                </button>
-            </div>
-            </transition>
+            <div class="mini-button" v-on:click="flipContent('settings')"><font-awesome-icon icon='ellipsis'></font-awesome-icon></div>
         </div>
-        <div class="chat">
-            <Message
-                v-for="message in messages"
-                :key="message.id"
-                :userSentMessage="message.sentByMe"
-                :senderName="message.sender.name"
-                :content="message.text"
-                :timestamp="message.created_time"
-                :withNewDate="message.withNewDate"
-                :datestamp="message.datestamp">
-            </Message>
-            <div class="input-bar-handler">
-                <div class="input-bar">
-                    <textarea @keyup.enter="addMessage" class="nunito-400" placeholder="Message" type="text" v-model="inputMessage"></textarea>
-                    <div class="mini-button" v-on:click="addMessage">
-                        <font-awesome-icon class="fa-icon" icon="paper-plane" style="rotate: 45deg; translate: -3px 1px; color: var(--accent-color-deep);"></font-awesome-icon>
-                    </div>
-                </div>  
+        <div class="chat-inner-container">
+            <div class="chat">
+                <Message
+                    v-for="message in messages"
+                    :key="message.id"
+                    :userSentMessage="message.sentByMe"
+                    :senderName="message.sender.name"
+                    :content="message.text"
+                    :timestamp="message.created_time"
+                    :withNewDate="message.withNewDate"
+                    :datestamp="message.datestamp">
+                </Message>
+                <div class="input-bar-handler">
+                    <div class="input-bar">
+                        <textarea @keyup.enter="addMessage" class="nunito-400" placeholder="Message" type="text" v-model="inputMessage"></textarea>
+                        <div class="mini-button" v-on:click="addMessage">
+                            <font-awesome-icon class="fa-icon" icon="paper-plane" style="rotate: 45deg; translate: -3px 1px; color: var(--accent-color-deep);"></font-awesome-icon>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+            <div class="chat-settings-bar" id="settings">
+                <div class="button-bar">
+                    <SwitchButton :style="{ textAlign: 'center' }" :text="'Members'"></SwitchButton>
+                    <SwitchButton :text="'Media'"></SwitchButton>
+                    <SwitchButton :text="'Files'"></SwitchButton>
+                </div>
+                <Suspense>
+                    <ChatMembers 
+                        :chatId="currentChat.id"
+                        :key="`chat-members-${currentChat.id}`"></ChatMembers>
+                </Suspense>
             </div>
         </div>
     </div>
@@ -58,6 +59,8 @@
 import { computed } from 'vue'
 import { useChatStore } from '@/chat-store';
 import Message from './Message.vue';
+import SwitchButton from './SwitchButton.vue';
+import ChatMembers from './ChatMembers.vue';
 
 const chatStore = useChatStore();
 const members = computed(() => chatStore.members);
@@ -70,7 +73,7 @@ headers.append('Content-Type', 'application/json');
 
 function getChatDefaultIcon()
 {
-    const words = currentChat.value.name.split(' ')
+    const words = currentChat.value.name.trim().split(' ')
     let result = ""
     words.forEach(element => {
         result += element[0].toUpperCase();
@@ -78,8 +81,12 @@ function getChatDefaultIcon()
     return result;
 }
 
-async function revealAddPopup(params) {
+function flipContent(switchType)
+{
+    const hiddenContent = document.getElementById(switchType); 
 
+    if (hiddenContent.classList.contains('show')) hiddenContent.classList.remove('show');
+    else hiddenContent.classList.add('show');
 }
 
 async function addUser(params) {
@@ -134,6 +141,38 @@ async function addMessage(event)
 <style scoped>
     @import url(../css/fonts.css);
     @import url(../css/colors.css);
+
+    .button-bar {
+        display: flex;
+    }
+
+    .chat-inner-container {
+        display: flex;
+    }
+
+    .chat-settings-bar {
+        display: none;
+		opacity: 0;
+
+        background-color: var(--black-color);
+        margin: 0 0.5rem;
+
+		transition: all 0.1s ease;
+		transition-property: overlay display opacity;
+		transition-duration: 0.1s;
+		transition-behavior: allow-discrete;
+    }
+
+	.show {
+		display: block;
+
+		opacity: 1;
+		@starting-style {
+			opacity: 0;
+		}
+
+        transition: all 0.1s ease-out;
+	}
 
     .icon-text-default {
         text-align: center;
