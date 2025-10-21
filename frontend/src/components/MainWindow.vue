@@ -8,7 +8,8 @@
             :bio="userStore.userData?.bio"></MiscBar>
             <Chats></Chats>
         </div>
-        <ChatWindow></ChatWindow>
+        <ChatWindow
+        :chatIcon="null"></ChatWindow>
     </div>
 </template>
 
@@ -33,10 +34,13 @@
 
     .main-frame {
         display: flex;
+
         margin: 0 10vw;
+        max-width: 1464px;
+        min-width: 1080px; 
+        height: 100vh;
         color: var(--white-color);
         border: 1px solid var(--black-color);
-        border-radius: 0.25rem;
         box-sizing: border-box;
         overflow: hidden;
         background-color: var(--grey-color);

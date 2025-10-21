@@ -100,6 +100,7 @@
 		border-radius: 1rem;
 		box-sizing: content-box;
 		align-content: center;
+		align-self: center;
 
 		height: 94vh;
 	}

@@ -1,24 +1,24 @@
 <template>
-    <div class="date-blob" v-if="withNewDate">
+    <div class="date-blob nunito-400" v-if="withNewDate">
         {{ datestamp }}
     </div>
-    <div ref="targetComponent" v-if="!userSentMessage" class="other-message-container">
-        <div class="message-sender nunito-800">
-            <b>{{ senderName }}</b>
+    <div v-if="!userSentMessage" class="other-message">
+        <div class="user-icon nunito-600">{{ getUserDefaultIcon() }}</div>
+        <div ref="targetComponent" class="other-message-container">
+            <div class="message-sender nunito-800">
+                <b>{{ senderName }}</b>
+            </div>
+            <div class="message-content nunito-300">
+                {{ content }}
+            </div>
+            <div class="timestamp nunito-200">{{ timestamp }}</div>  
         </div>
-        <div class="message-content nunito-300">
-            {{ content }}
-        </div>
-        <div class="timestamp nunito-100">{{ timestamp }}</div>  
     </div>
     <div ref="targetComponent" v-else class="your-message-container">
-        <div class="message-sender nunito-800">
-            <b>{{ senderName }}</b>
-        </div>
         <div class="message-content nunito-300">
             {{ content }}
         </div>
-        <div class="timestamp nunito-100">{{ timestamp }}</div>
+        <div class="timestamp nunito-200">{{ timestamp }}</div>
     </div>
 </template>
 
@@ -52,6 +52,17 @@
                 type: String,
                 default: "datestamp"
             }
+        },
+        methods: {
+            getUserDefaultIcon()
+            {
+                const words = this.senderName.trim().split(' ')
+                let result = ""
+                words.forEach(element => {
+                    result += element[0].toUpperCase();
+                });
+                return result;
+            }
         }
     }
 </script>
@@ -60,12 +71,39 @@
     @import url(../css/fonts.css);
     @import url(../css/colors.css);
 
+    .other-message {
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+    }
+
+    .user-icon {
+        color: var(--white-color);
+
+        box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 35%);
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: 0.6rem;
+
+        border-radius: 50%;
+        background: linear-gradient(90deg, var(--primary-color), var(--accent-color-deep));
+        overflow: hidden;
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        box-sizing: content-box;
+        flex-shrink: 0;
+    }
+
     .message-content {
         font-size: 0.7rem;
     }
 
     .date-blob {
         position: sticky;
+        top: 0;
         text-align: center;
         align-self: center;
 
@@ -74,6 +112,7 @@
 
         padding: 0.25rem;
         border-radius: 0.25rem;
+        font-size: 0.6rem;
 
         width: fit-content;
     }
@@ -122,7 +161,6 @@
     .timestamp {
         font-size: 0.4rem;
         text-align: right;
-        margin-top: 0.1rem;
     }
 
     .your-message-container .timestamp {

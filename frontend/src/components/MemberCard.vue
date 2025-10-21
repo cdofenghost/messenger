@@ -1,8 +1,8 @@
 <template>
-    <div class="user-card">
+    <div class="user-card" @contextmenu.prevent="handleRightClick">
         <div class="user-char-icon nunito-600" v-if="userIcon == null">{{  getChatDefaultIcon() }}</div>
         <div class="user-icon" v-else>{{ userIcon }}</div>
-        <div class="user-name nunito-300">{{ userName }}</div>
+        <div class="user-name nunito-300">{{ userName }} ({{ userRole }})</div>
         <div :color="userTag.replace('@', '#')" class="user-tag nunito-100">{{ userTag }}</div>
     </div>
 </template>
@@ -26,6 +26,10 @@ const props = defineProps({
         type: String,
         default: "default",
     },
+    userRole: {
+        type: String,
+        default: "member",
+    },
 });
 function getChatDefaultIcon()
 {
@@ -35,6 +39,11 @@ function getChatDefaultIcon()
         result += element[0].toUpperCase();
     });
     return result;
+}
+
+function handleRightClick(event)
+{
+    
 }
 
 </script>
@@ -52,13 +61,16 @@ function getChatDefaultIcon()
         border-radius: 50%;
         background: linear-gradient(90deg, var(--primary-color), var(--accent-color-deep));
 
-        width: 1.5rem;
-        height: 1.5rem;
+        width: 32px;
+        height: 32px;
+
+        font-size: 0.6rem;
     }
 
     .user-name {
         font-size: 0.6rem;
     }
+
     .user-tag {
         font-size: 0.6rem;
     }

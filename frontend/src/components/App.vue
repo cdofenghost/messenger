@@ -11,9 +11,14 @@
 </script>
 
 <style>
+	#app {
+		height: 100vh;
+		align-content: center;
+	}
 	html{
 		font-size: 24px;
     	font-size: clamp(20px, 2vw, 24px);
+		overflow: hidden;
 	}
 
 	html::selection{
@@ -25,7 +30,7 @@
 		margin: 0;
 		padding: 0;
 		background-color: var(--background-color);
-		margin: 1rem 2rem;
+		/* margin: 1rem 2rem; */
 	}
 
 	img {

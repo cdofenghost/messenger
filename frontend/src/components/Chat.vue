@@ -149,7 +149,7 @@
     }
 
     .last-message {
-        font-size: 0.7rem;
+        font-size: 0.6rem;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;

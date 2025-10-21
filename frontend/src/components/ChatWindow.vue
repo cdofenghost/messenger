@@ -2,7 +2,7 @@
     <div class="chat-container" v-if="currentChat">
         <div class="chat-bar">
             <div class="chat-icon">
-                <img v-if="chatIcon !== undefined"   src="/src/static/imgs/666175.png"></img>
+                <img v-if="chatIcon !== null"   src="/src/static/imgs/666175.png"></img>
                 <div v-else class="icon-text-default nunito-600">{{ getChatDefaultIcon() }}</div>
             </div>
             <div class="detail-info" style="width: 100%; box-sizing: border-box;">
@@ -33,6 +33,15 @@
                 </div>
             </div>
             <div class="chat-settings-bar" id="settings">
+                <div class="chat-info">
+                    <div class="chat-type nunito-400">{{ currentChat.type }} Chat Info</div>
+                    <div class="chat-icon">
+                        <img v-if="chatIcon !== null"   src="/src/static/imgs/666175.png"></img>
+                        <div v-else class="icon-text-default nunito-600">{{ getChatDefaultIcon() }}</div>
+                    </div>
+                    <div class="chat-name nunito-600">{{ currentChat.name }}</div>
+                    <div class="chat-member-count nunito-400">{{ members.length }} members</div>
+                </div>
                 <div class="button-bar">
                     <SwitchButton :style="{ textAlign: 'center' }" :text="'Members'"></SwitchButton>
                     <SwitchButton :text="'Media'"></SwitchButton>
@@ -70,6 +79,13 @@ var inputMessage = '';
 
 const headers = new Headers();
 headers.append('Content-Type', 'application/json');
+
+const props = defineProps({
+    chatIcon: {
+        type: String,
+        default: null,
+    }
+});
 
 function getChatDefaultIcon()
 {
@@ -142,12 +158,43 @@ async function addMessage(event)
     @import url(../css/fonts.css);
     @import url(../css/colors.css);
 
+    .chat-info {
+        justify-items: center;
+        padding: 8px;
+    }
+    
+    .chat-info .chat-icon {
+        width: 3rem;
+        height: 3rem;
+        min-width: 3rem;
+        min-height: 3rem;
+        margin: 8px;
+
+        font-size: 1rem;
+    }
+    
+    .chat-info .chat-type {
+        width: 100%;
+        color: var(--white-color);
+        font-size: 0.7rem;
+        font-style: normal;
+
+        margin-bottom: 16px;
+    }
+
+    .chat-info .chat-member-count {
+        color: #a3a3a3;
+    }
+
     .button-bar {
         display: flex;
     }
 
     .chat-inner-container {
         display: flex;
+        flex-grow: 1;
+        height: 90%;
+        box-sizing: border-box;
     }
 
     .chat-settings-bar {
@@ -179,48 +226,6 @@ async function addMessage(event)
         color: var(--white-color);
     }
 
-    .popup-container {
-        position: relative;
-        display: inline-block;
-    }
-
-    .trigger-btn {
-        padding: 10px 20px;
-        background: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .popup {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        margin-top: 5px;
-        z-index: 1000;
-    }
-
-    .popup-content {
-        background: white;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        min-width: 150px;
-    }
-
-    .popup-content p {
-        margin: 0;
-        padding: 8px;
-        cursor: pointer;
-    }
-
-    .popup-content p:hover {
-        background: #f5f5f5;
-    }
-
-
     .chat-type {
         color: var(--accent-color-deep); 
         font-size: 0.6rem;
@@ -247,15 +252,19 @@ async function addMessage(event)
         background-color: var(--grey-color);
         font-size: 0.75rem;
         width: 100%;
+        height: 100%;
 
         gap: 0.25rem;
-        padding: 0.25rem 0;
+        padding: 0.25rem 0.25rem;
         box-sizing: border-box;
     }
 
     .chat-icon {
+        width: 2rem;
+        height: 2rem;
         min-width: 2rem;
         min-height: 2rem;
+
         border-radius: 50%;
         background: linear-gradient(90deg, #7F56D9, #9E77ED);
         overflow: hidden;
@@ -282,7 +291,6 @@ async function addMessage(event)
     }
 
     .chat-member-count {
-        color: var(--accent-color);
         font-size: 0.6rem;
     }
 
@@ -297,12 +305,11 @@ async function addMessage(event)
         color: var(--primary-color);
 
         width: 100%;
-        height: 88vh;
         border-radius: 0.25rem;
 
         padding: 0.25rem 20%;
         overflow-x: hidden;
-        overflow-y: scroll;
+        overflow-y: auto;
         
         scrollbar-color: var(--accent-color-deep) var(--grey-color);
         scrollbar-width: thin;
